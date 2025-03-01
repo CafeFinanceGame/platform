@@ -2,7 +2,7 @@
 
 import { useAccount } from 'wagmi'
 import { useAppKit, useAppKitAccount } from '@reown/appkit/react'
-import { CAFButton } from './button'
+import { CAFButton } from './ui/button'
 
 const compactHash = (hash: string) => {
     return hash.slice(0, 7) + '...' + hash.slice(-5)

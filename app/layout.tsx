@@ -8,6 +8,8 @@ import { Providers } from "./providers";
 import { siteConfig } from "@/config/site";
 import { fontMontserrat } from "@/config/fonts";
 import { Navbar } from "@/components/navbar";
+import { Sidebar } from "./_components/Sidebar";
+import { Topbar } from "./_components/Topbar";
 
 export const metadata: Metadata = {
   title: {
@@ -45,11 +47,14 @@ export default async function RootLayout({
         )}
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }} cookies={cookies}>
-          <div className="relative flex flex-col h-screen">
-            {/* <Navbar /> */}
-            <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
-              {children}
-            </main>
+          <div className="relative flex h-screen">
+            <Sidebar />
+            <div className="flex flex-col flex-grow">
+              <Topbar />
+              <main className="flex-grow">
+                {children}
+              </main>
+            </div>
           </div>
         </Providers>
       </body>
