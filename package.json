@@ -16,6 +16,7 @@
   "@heroui/link": "2.2.11",
   "@heroui/listbox": "2.3.13",
   "@heroui/navbar": "2.2.12",
+  "@heroui/react": "^2.7.4",
   "@heroui/snippet": "2.2.14",
   "@heroui/switch": "2.2.12",
   "@heroui/system": "2.4.10",
@@ -23,7 +24,9 @@
   "@pinata/sdk": "^2.1.0",
   "@react-aria/ssr": "3.9.7",
   "@react-aria/visually-hidden": "3.8.19",
-  "axios": "^1.8.1",
+  "@reown/appkit": "^1.6.9",
+  "@reown/appkit-adapter-wagmi": "^1.6.9",
+  "@tanstack/react-query": "^5.66.11",
   "clsx": "2.1.1",
   "form-data": "^4.0.2",
   "formidable": "^3.5.2",
@@ -33,7 +36,10 @@
   "next-themes": "^0.4.4",
   "pinata-web3": "^0.5.4",
   "react": "18.3.1",
-  "react-dom": "18.3.1"
+  "react-dom": "18.3.1",
+  "react-icons": "^5.5.0",
+  "viem": "^2.23.5",
+  "wagmi": "^2.14.12"
  },
  "devDependencies": {
   "@next/eslint-plugin-next": "15.0.4",
