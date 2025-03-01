@@ -1,6 +1,5 @@
 import { cookieStorage, createStorage } from '@wagmi/core'
 import { coreDao } from 'wagmi/chains'
-import { metaMask, walletConnect, injected, safe } from 'wagmi/connectors';
 import { type Chain } from 'viem';
 import constants from './constants';
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
@@ -32,13 +31,7 @@ const wagmiAdapter = new WagmiAdapter({
         storage: cookieStorage,
     }),
     networks: [coreDao, coreTestnet],
-    projectId: "c502147f156291bc288c3dbe04fccaac",
-    connectors: [
-        metaMask(),
-        injected(),
-        safe(),
-        walletConnect({ projectId: "c502147f156291bc288c3dbe04fccaac" }),
-    ],
+    projectId: constants.walletconnet.PROJECT_ID,
     ssr: true,
 })
 

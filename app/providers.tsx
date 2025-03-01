@@ -8,11 +8,16 @@ import { useRouter } from "next/navigation";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { WagmiProvider, cookieToInitialState, type Config } from "wagmi";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { createAppKit } from '@reown/appkit/react'
+import { coreDao } from '@reown/appkit/networks'
 
-import utils from "@/utils"
+import constants from "@/utils/constants";
+import wagmi from "@/utils/wagmi";
+import app from "@/utils/app";
+import { coreTestnet } from "@/utils/wagmi";
 
 export interface ProvidersProps {
-  cookies: string;
+  cookies: string | null;
   children: React.ReactNode;
   themeProps?: ThemeProviderProps;
 }
@@ -27,12 +32,25 @@ declare module "@react-types/shared" {
 
 const queryClient = new QueryClient()
 
+createAppKit({
+  networks: [coreDao, coreTestnet],
+  defaultNetwork: coreTestnet,
+  adapters: [wagmi],
+  metadata: {
+    name: app.NAME,
+    description: app.DESCRIPTION,
+    url: 'https://cafifinance.com',
+    icons: ['https://cafifinance.com/favicon.ico'],
+  },
+  projectId: constants.walletconnet.PROJECT_ID
+})
+
 export function Providers({ children, themeProps, cookies }: ProvidersProps) {
   const router = useRouter();
-  const initialState = cookieToInitialState(utils.wagmi.wagmiConfig as Config, cookies);
+  const initialState = cookieToInitialState(wagmi.wagmiConfig as Config, cookies);
 
   return (
-    <WagmiProvider config={utils.wagmi.wagmiConfig as Config} initialState={initialState}>
+    <WagmiProvider config={wagmi.wagmiConfig as Config} initialState={initialState}>
       <QueryClientProvider client={queryClient}>
         <HeroUIProvider navigate={router.push}>
           <NextThemesProvider {...themeProps}>{children}</NextThemesProvider>

@@ -5,5 +5,5 @@ import constants from "./constants";
 export default {
     app,
     wagmi,
-    constants,
+    constants
 };
