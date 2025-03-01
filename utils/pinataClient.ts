@@ -1,7 +1,11 @@
-const pinata = require('@pinata/sdk');
+import { metadata } from "@/app/layout";
+import fs from 'fs';
+import path from 'path';
+import { CIDType } from "./api";
+import axios from "axios";
+import pinata from '@pinata/sdk'
+
 const pinataClient = new pinata(process.env.NEXT_PUBLIC_PINATA_API_KEY, process.env.NEXT_PUBLIC_PINATA_SECRET_API_KEY);
-const fs = require('fs');
-const path = require('path');
 
 // Keep track of the latest type folders locally
 const localTypeFolders = './nft_types';
@@ -35,63 +39,3 @@ export async function addNftToType(nftType: any, nftId: any, jsonContent: any) {
     latestTypeUri: `ipfs://${result.IpfsHash}/`
   };
 }
-
-
-// // Function to upload JSON data to IPFS via Pinata
-// export const uploadJSONToIPFS = async (jsonData: any) => {
-//     try {
-//         const res = await axios.post(
-//             'https://api.pinata.cloud/pinning/pinJSONToIPFS',
-//             jsonData,
-//             {
-//                 headers: {
-//                     'pinata_api_key': PINATA_API_KEY,
-//                     'pinata_secret_api_key': PINATA_SECRET_API_KEY,
-//                 },
-//             }
-//         );
-    
-//         return {
-//             success: true,
-//             ipfsHash: res.data.IpfsHash,
-//             pinataUrl: `https://gateway.pinata.cloud/ipfs/${res.data.IpfsHash}`,
-//         };
-//     } catch (error) {
-//         console.error('Error uploading JSON to IPFS: ', error);
-//         return {
-//             success: false,
-//             error: (error as any).message,
-//         };
-//     }
-// };
-
-// export const uploadImageToIPFS = async (imageData: any) => {
-//     try {
-//         const formData = new FormData();
-//         formData.append('file', imageData.buffer, imageData.name);
-    
-//         const res = await axios.post(
-//             'https://api.pinata.cloud/pinning/pinFileToIPFS',
-//             formData,
-//             {
-//                 headers: {
-//                     'Content-Type': `multipart/form-data; boundary=${formData.getBoundary()}`,
-//                     'pinata_api_key': PINATA_API_KEY,
-//                     'pinata_secret_api_key': PINATA_SECRET_API_KEY,
-//                 },
-//             }
-//         );
-    
-//         return {
-//             success: true,
-//             ipfsHash: res.data.IpfsHash,
-//             pinataUrl: `https://gateway.pinata.cloud/ipfs/${res.data.IpfsHash}`,
-//         };
-//     } catch (error) {
-//         console.error('Error uploading image to IPFS: ', error);
-//         return {
-//             success: false,
-//             error: (error as any).message,
-//         };
-//     }
-// }

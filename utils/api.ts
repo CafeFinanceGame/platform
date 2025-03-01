@@ -1,3 +1,5 @@
+import fs from 'fs';
+
 enum CIDType {
     PRODUCT = 'product',
     EVENT = 'event',
@@ -9,15 +11,28 @@ class CIDManager {
     public eventCID: string | undefined;
     public companyCID: string | undefined;
 
+    constructor() {
+        if (!fs.existsSync(`./ipfs_index`)) {
+            fs.mkdirSync(`./ipfs_index`);
+        }
+        if (!fs.existsSync(`./ipfs_index/index.json`)) {
+            fs.writeFileSync(`./ipfs_index/index.json`, JSON.stringify({}));
+        }
+        this.loadIndex();
+    }
+
     public getProductCID() {
+        this.updateIndex();
         return this.productCID;
     }
 
     public getEventCID() {
+        this.updateIndex();
         return this.eventCID;
     }
 
     public getCompanyCID() {
+        this.updateIndex();
         return this.companyCID;
     }
 
@@ -60,12 +75,31 @@ class CIDManager {
 
     public updateCID(oldCid: string, cid: string) {
         if (this.productCID === oldCid) {
-            this.productCID = cid;
+            this.setProductCID(cid);
         } else if (this.eventCID === oldCid) {
-            this.eventCID = cid;
+            this.setEventCID(cid);
         } else if (this.companyCID === oldCid) {
-            this.companyCID = cid;
+            this.setCompanyCID(cid);
         }
+    }
+
+    private async updateIndex() {
+        const time = new Date().getTime();
+        const stream = fs.createWriteStream(`./ipfs_index/index.json`);
+        stream.write(JSON.stringify({ 
+            [CIDType.PRODUCT]: this.productCID,
+            [CIDType.EVENT]: this.eventCID,
+            [CIDType.COMPANY]: this.companyCID,
+            time
+        }));
+        stream.end();
+    }
+
+    private async loadIndex() {
+        const index = JSON.parse(fs.readFileSync(`./ipfs_index/index.json`, 'utf8'));
+        CIDType.PRODUCT in index ? this.productCID = index[CIDType.PRODUCT] : this.productCID = '';
+        CIDType.EVENT in index ? this.eventCID = index[CIDType.EVENT] : this.eventCID = '';
+        CIDType.COMPANY in index ? this.companyCID = index[CIDType.COMPANY] : this.companyCID = '';
     }
 }
 
