@@ -2,7 +2,9 @@
 
 import { CAFButton } from "@/components/ui/button";
 import { Link } from "@heroui/link";
+import { Image as HeroImage } from "@heroui/react";
 import { IoPlayCircle } from "react-icons/io5";
+import Image from 'next/image'
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> { }
 export const HeroSection: React.FC<Props> = () => {
@@ -26,6 +28,13 @@ export const HeroSection: React.FC<Props> = () => {
                 </div>
             </div>
             <div className="flex flex-col gap-4">
+                <HeroImage
+                    as={Image}
+                    src="/assets/hero-1.png"
+                    alt="CoFi Game"
+                    width={475 * 3 / 2}
+                    height={450 * 3 / 2}
+                />
             </div>
         </section>
     )
