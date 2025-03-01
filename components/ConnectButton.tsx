@@ -2,7 +2,7 @@
 
 import { useAccount } from 'wagmi'
 import { useAppKit, useAppKitAccount } from '@reown/appkit/react'
-import { Button } from '@heroui/button'
+import { CAFButton } from './button'
 
 const compactHash = (hash: string) => {
     return hash.slice(0, 7) + '...' + hash.slice(-5)
@@ -20,13 +20,13 @@ export const ConnectButton = () => {
         <div className="column">
             <span className="text-black">useAppKitAccount: {compactAddress}</span>
             <span className="text-black">useAccount (wagmi): {compactAddressWagmi}</span>
-            <Button
+            <CAFButton
                 isLoading={wagmiAccount.isConnecting}
                 onPress={() => open()}
                 className="mt-4"
             >
                 Connect
-            </Button>
+            </CAFButton>
         </div>
     )
 }

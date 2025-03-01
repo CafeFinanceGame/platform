@@ -42,6 +42,7 @@ createAppKit({
     url: 'https://cafifinance.com',
     icons: ['https://cafifinance.com/favicon.ico'],
   },
+  themeMode: 'light',
   projectId: constants.walletconnet.PROJECT_ID
 })
 
@@ -53,7 +54,7 @@ export function Providers({ children, themeProps, cookies }: ProvidersProps) {
     <WagmiProvider config={wagmi.wagmiConfig as Config} initialState={initialState}>
       <QueryClientProvider client={queryClient}>
         <HeroUIProvider navigate={router.push}>
-          <NextThemesProvider {...themeProps}>{children}</NextThemesProvider>
+          <NextThemesProvider forcedTheme="light" {...themeProps}>{children}</NextThemesProvider>
         </HeroUIProvider>
       </QueryClientProvider>
     </WagmiProvider>
