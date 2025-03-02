@@ -2,9 +2,9 @@ import { convertBufferToJson, convertFileToBuffer } from "@/lib/buffer";
 import { cidManager, CIDType } from "@/utils/api";
 import { getFileFromIpfs, postFileByTypeIpfs } from "@/utils/pinataClient";
 import fs from "fs";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: any, { params }: { params: { slug: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
     const eventCID = cidManager.getEventCID();
 

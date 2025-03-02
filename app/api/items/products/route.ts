@@ -1,7 +1,7 @@
 import { convertFileToBuffer } from "@/lib/buffer";
 import { cidManager, CIDType } from "@/utils/api";
 import { getFileFromIpfs, getListIpfs, postFileByTypeIpfs } from "@/utils/pinataClient";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
     const productCID = cidManager.getProductCID();
@@ -17,7 +17,7 @@ export async function GET() {
 }
 
 
-export async function POST(request: any) {
+export async function POST(request: NextRequest) {
     const fileObject = await convertFileToBuffer(request);
 
     const productCID = cidManager.getProductCID();

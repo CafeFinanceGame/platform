@@ -1,9 +1,9 @@
 import { convertBufferToJson, convertFileToBuffer } from "@/lib/buffer";
 import { cidManager, CIDType } from "@/utils/api";
 import { postFileByTypeIpfs, getFileFromIpfs } from "@/utils/pinataClient";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: any, { params }: { params: { slug: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
     const productCID = cidManager.getProductCID();
 
@@ -19,7 +19,7 @@ export async function GET(request: any, { params }: { params: { slug: string } }
     return NextResponse.json(fileObject, { status: 200 });
 }
 
-export async function PUT(request: any) {
+export async function PUT(request: NextRequest) {
     const productCID = cidManager.getProductCID();
 
     const formData = await request.formData();
