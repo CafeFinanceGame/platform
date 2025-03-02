@@ -20,7 +20,7 @@ export const Sidebar: React.FC<Props> = () => {
     ];
 
     return (
-        <aside className="h-full w-16 p-2">
+        <aside className="h-full w-24 p-2 z-10">
             <div className="flex flex-col items-center gap-8">
                 <Logo />
                 <ul className="p-1 rounded-full bg-default flex flex-col items-center justify-center">

@@ -9,7 +9,7 @@ import NextLink from "next/link";
 interface Props extends React.HTMLAttributes<HTMLDivElement> { }
 export const Topbar: React.FC<Props> = () => {
     return (
-        <HeroUINavbar maxWidth="full" position="sticky">
+        <HeroUINavbar maxWidth="full" position="sticky" isBlurred={false} className="bg-transparent">
             <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
                 <NavbarBrand as="li" className="gap-3 max-w-fit">
                     <NextLink className="flex justify-start items-center gap-1" href="/">

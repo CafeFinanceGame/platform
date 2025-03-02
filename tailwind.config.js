@@ -53,8 +53,8 @@ const config = {
             900: '#29150F'
           },
           default: {
-            DEFAULT: '#000000',
-            foreground: '#ffffff',
+            DEFAULT: '#ffffff',
+            foreground: '#000000',
           }
         }
       },
