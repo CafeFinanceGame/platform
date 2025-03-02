@@ -54,7 +54,7 @@ export function Providers({ children, themeProps, cookies }: ProvidersProps) {
     <WagmiProvider config={wagmi.wagmiConfig as Config} initialState={initialState}>
       <QueryClientProvider client={queryClient}>
         <HeroUIProvider navigate={router.push}>
-          <NextThemesProvider forcedTheme="light" {...themeProps}>{children}</NextThemesProvider>
+          <NextThemesProvider forcedTheme="dark" {...themeProps}>{children}</NextThemesProvider>
         </HeroUIProvider>
       </QueryClientProvider>
     </WagmiProvider>
