@@ -7,9 +7,9 @@ enum CIDType {
 }
 
 class CIDManager {
-    public productCID: string | undefined;
-    public eventCID: string | undefined;
-    public companyCID: string | undefined;
+    public productCID!: string;
+    public eventCID!: string;
+    public companyCID!: string;
 
     constructor() {
         if (!fs.existsSync(`./ipfs_index`)) {
@@ -22,29 +22,38 @@ class CIDManager {
     }
 
     public getProductCID() {
-        this.updateIndex();
         return this.productCID;
     }
 
     public getEventCID() {
-        this.updateIndex();
         return this.eventCID;
     }
 
     public getCompanyCID() {
-        this.updateIndex();
         return this.companyCID;
     }
 
     public setProductCID(cid: string) {
+        if (!cid) {
+            throw new Error('CID cannot be empty');
+        }
+        this.updateIndex();
         this.productCID = cid;
     }
 
     public setEventCID(cid: string) {
+        if (!cid) {
+            throw new Error('CID cannot be empty');
+        }
+        this.updateIndex();
         this.eventCID = cid;
     }
 
     public setCompanyCID(cid: string) {
+        if (!cid) {
+            throw new Error('CID cannot be empty');
+        }
+        this.updateIndex();
         this.companyCID = cid;
     }
 
