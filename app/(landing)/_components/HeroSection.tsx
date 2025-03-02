@@ -1,10 +1,7 @@
 "use client";
 
-import { CAFButton } from "@/components/ui/button";
 import { Link } from "@heroui/link";
-import { Image as HeroImage } from "@heroui/react";
-import { IoPlayCircle } from "react-icons/io5";
-import Image from 'next/image'
+import { GetStartedDialog } from "@/app/(game)/_components/GetStartedDialog";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> { }
 export const HeroSection: React.FC<Props> = () => {
@@ -18,12 +15,7 @@ export const HeroSection: React.FC<Props> = () => {
                 <p className="text-secondary text-4xl font-bold">Social PvP Game</p>
                 <p className="w-full max-w-screen-sm font-medium break-words">CoFi Game is a cafe business simulation game where players will play one of the types of companies in the cafe ecosystem and interact with other players to build a competitive market.</p>
                 <div className="flex flex-row gap-4 items-center w-fit">
-                    <CAFButton
-                        className="w-fit"
-                        startContent={<IoPlayCircle size={24} />}
-                    >
-                        Play
-                    </CAFButton>
+                    <GetStartedDialog />
                     <Link href="/about" showAnchorIcon color="foreground">Learn More</Link>
                 </div>
             </div>
