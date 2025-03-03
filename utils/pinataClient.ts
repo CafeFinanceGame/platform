@@ -71,8 +71,9 @@ export async function getListIpfs(query: {
 				return acc;
 			}, {} as Record<string, string>)
 		).toString();
+
 		const result = await axios.get(
-			`${pinataGateway}$/data/pinList?${queryStr}`
+			`${pinataGateway}data/pinList?${queryStr}`
 		);
 		return result;
 	} catch (error: any) {
