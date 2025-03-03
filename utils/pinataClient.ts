@@ -1,12 +1,8 @@
-import { metadata } from "@/app/layout";
 import fs from 'fs';
 import path from 'path';
-import { CIDType } from "./api";
 import axios from "axios";
 import pinata from '@pinata/sdk'
-import { NextResponse } from "next/server";
-import { convertFileToBuffer } from "@/lib/buffer";
-import { NotFoundError } from "next/dist/client/components/not-found";
+import constants from './constants';
 
 const pinataClient = new pinata(
 	process.env.NEXT_PUBLIC_PINATA_API_KEY, 
@@ -16,14 +12,14 @@ const pinataClient = new pinata(
 const pinataGateway = 'https://gateway.pinata.cloud/ipfs/';
 
 // Keep track of the latest type folders locally
-const localTypeFolders = './nft_types';
+const localTypeFolders = process.env.LOCAL_FOLDER as string;
 	if (!fs.existsSync(localTypeFolders)) {
 	fs.mkdirSync(localTypeFolders);
 }
 
-export async function postFileByTypeIpfs(nftType: any, nftId: any, fileObject: any) {
+export async function postFileByTypeIpfs(type: any, id: any, fileObject: any) {
 	// Create or access the type folder
-	const typeFolder = path.join(localTypeFolders, nftType);
+	const typeFolder = path.join(localTypeFolders, type);
 
 	if (!fs.existsSync(typeFolder)) {
 		fs.mkdirSync(typeFolder);
@@ -31,7 +27,7 @@ export async function postFileByTypeIpfs(nftType: any, nftId: any, fileObject: a
 	
 	// Add the new NFT to the type folder
 	fs.writeFileSync(
-		path.join(typeFolder, nftId),
+		path.join(typeFolder, id),
 		typeof fileObject === 'string' ? fileObject : JSON.stringify(fileObject)
 	);
 	
@@ -39,14 +35,14 @@ export async function postFileByTypeIpfs(nftType: any, nftId: any, fileObject: a
 	try {
 		const result = await pinataClient.pinFromFS(typeFolder, {
 			pinataMetadata: { 
-				name: `NFT-Type-${nftType}-${Date.now()}` 
+				name: `${type}-${Date.now()}` 
 			}
 		});
 		
 		// Return the updated CID for this type
 		return {
 			typeCid: result.IpfsHash,
-			fileUri: `ipfs://${result.IpfsHash}/${nftId}`,
+			fileUri: `ipfs://${result.IpfsHash}/${id}`,
 			folderUrl: `${pinataGateway}${result.IpfsHash}`
 		};
 	} catch (error: any) {

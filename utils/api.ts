@@ -1,5 +1,8 @@
 import fs from 'fs';
 
+const folderPath = process.env.FOLDER_PATH as string;
+const indexFilePath = `${folderPath}/index.json`;
+
 enum CIDType {
     PRODUCT = 'product',
     EVENT = 'event',
@@ -13,11 +16,11 @@ class CIDManager {
     private companyCID!: string;
 
     constructor() {
-        if (!fs.existsSync(`./ipfs_index`)) {
-            fs.mkdirSync(`./ipfs_index`);
+        if (!fs.existsSync(folderPath)) {
+            fs.mkdirSync(folderPath);
         }
-        if (!fs.existsSync(`./ipfs_index/index.json`)) {
-            fs.writeFileSync(`./ipfs_index/index.json`, JSON.stringify({}));
+        if (!fs.existsSync(indexFilePath)) {
+            fs.writeFileSync(indexFilePath, JSON.stringify({}));
         }
         this.loadIndex();
     }
@@ -95,7 +98,7 @@ class CIDManager {
 
     private async updateIndex() {
         const time = new Date().getTime();
-        const stream = fs.createWriteStream(`./ipfs_index/index.json`);
+        const stream = fs.createWriteStream(indexFilePath);
         stream.write(JSON.stringify({ 
             [CIDType.PRODUCT]: this.productCID,
             [CIDType.EVENT]: this.eventCID,
@@ -106,7 +109,7 @@ class CIDManager {
     }
 
     private async loadIndex() {
-        const index = JSON.parse(fs.readFileSync(`./ipfs_index/index.json`, 'utf8'));
+        const index = JSON.parse(fs.readFileSync(indexFilePath, 'utf8'));
         CIDType.PRODUCT in index ? this.productCID = index[CIDType.PRODUCT] : this.productCID = '';
         CIDType.EVENT in index ? this.eventCID = index[CIDType.EVENT] : this.eventCID = '';
         CIDType.COMPANY in index ? this.companyCID = index[CIDType.COMPANY] : this.companyCID = '';
