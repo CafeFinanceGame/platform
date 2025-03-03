@@ -7,9 +7,10 @@ enum CIDType {
 }
 
 class CIDManager {
-    public productCID!: string;
-    public eventCID!: string;
-    public companyCID!: string;
+    
+    private productCID!: string;
+    private eventCID!: string;
+    private companyCID!: string;
 
     constructor() {
         if (!fs.existsSync(`./ipfs_index`)) {

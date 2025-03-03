@@ -49,12 +49,11 @@ export async function postFileByTypeIpfs(nftType: any, nftId: any, fileObject: a
 			fileUri: `ipfs://${result.IpfsHash}/${nftId}`,
 			folderUrl: `${pinataGateway}${result.IpfsHash}`
 		};
-	} catch (error) {
-		console.error('Error in API route: ', error);
-		return NextResponse.json(
-			{ error: 'Error uploading file' },
-			{ status: 500 }
-		);
+	} catch (error: any) {
+		console.error('Error in API route: ', error.response.data);
+		console.error('Code:', error.response.status);
+		console.error('Message:', error.response.message);
+		throw error;
 	}
 }
 
@@ -83,7 +82,8 @@ export async function getListIpfs(query: {
 	} catch (error: any) {
 		console.error('Error in API route: ', error.response.data);
 		console.error('Code:', error.response.status);
-		return null;
+		console.error('Message:', error.response.message);
+		throw error;
 	}
 }
 
@@ -94,7 +94,8 @@ export async function getFileFromIpfs(cid: string, fileName: string) {
 	} catch (error: any) {
 		console.error('Error fetching from IPFS: ', error.response.data);
 		console.error('Code:', error.response.status);
-		return null;
+		console.error('Message:', error.response.message);
+		throw error;
 	}
 }
 
@@ -110,9 +111,7 @@ export async function postFileToIpfs(fileObject: any) {
 	} catch (error: any) {
 		console.error('Error in API route: ', error.response.data);
 		console.error('Code:', error.response.status);
-		return NextResponse.json(
-			{ error: 'Error uploading file' },
-			{ status: 500 }
-		);
+		console.error('Message:', error.response.message);
+		throw error;
 	}
 }
