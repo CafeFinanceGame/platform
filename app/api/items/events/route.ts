@@ -5,44 +5,43 @@ import { convertFileToBuffer } from "@/lib/buffer";
 
 export async function GET() {
     const eventCID = cidManager.getEventCID();
-    if (!eventCID) {
-        throw new Error("Event CID is undefined");
-    }
     
-    const lists = await getListIpfs();
-    if (!lists) {
+    try {
+        const lists = await getListIpfs();
+        return NextResponse.json(lists.data, { status: 200 });
+    } catch (error: any) {
         return NextResponse.json(
-            { message: 'Nothing was found or the API has occured error' }, 
-            { status: 404 }
+            { message: 'Error getting list', error: error.response.message },
+            { status: error.response.status }
         );
     }
-
-    return NextResponse.json(lists.data, { status: 200 });
 }
 
 export async function POST(request: NextRequest) {
     const eventCID = cidManager.getEventCID();
-    if (!eventCID) {
-        throw new Error("Event CID is undefined");
-    }
 
     const formData = await request.formData();
     const file = formData.get('file');
-    const fileObject = await convertFileToBuffer(file);
+    if (!file) {
+        return NextResponse.json(
+            { message: 'File not found' }, 
+            { status: 400 }
+        );
+    }
 
-    const fileExists = await getFileFromIpfs(eventCID, fileObject.name);
-    if (fileExists) {
+    const fileObject = await convertFileToBuffer(file);
+    try {
+        const fileExists = await getFileFromIpfs(eventCID, fileObject.name);
+        const result = await postFileByTypeIpfs(CIDType.EVENT, fileObject.name, fileObject);
+
         return NextResponse.json(
-            { message: 'File already exists' }, 
-            { status: 409 }
+            { message: 'File uploaded successfully', result },
+            { status: 200 }
+        );
+    } catch (error: any) {
+        return NextResponse.json(
+            { message: 'Error uploading file', error: error.response.message },
+            { status: error.response.status }
         )
     }
-    const result = await postFileByTypeIpfs(CIDType.EVENT, fileObject.name, fileObject);
-    if (!result) {
-        return NextResponse.json(
-            { message: 'File upload failed' }, 
-            { status: 500 }
-        )
-    }
-    
 }

@@ -4,37 +4,49 @@ import { getFileFromIpfs, getListIpfs, postFileByTypeIpfs } from "@/utils/pinata
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
-    const productCID = cidManager.getProductCID();
-
-    const lists = await getListIpfs();
-    if (!lists) {
+    try {
+        const lists = await getListIpfs();
+        return NextResponse.json(lists.data, { status: 200 });
+    } catch (error: any) {
         return NextResponse.json(
-            { message: 'No files found' }, { status: 404 }
+            { message: 'Error getting list' },
+            { status: error.response.status }
         );
     }
-
-    return NextResponse.json(lists.data, { status: 200 });
 }
 
 
 export async function POST(request: NextRequest) {
-    const fileObject = await convertFileToBuffer(request);
 
-    const productCID = cidManager.getProductCID();
-    if (!productCID) {
-        throw new Error("Product CID is undefined");
-    }
-    const fileExists = await getFileFromIpfs(productCID, fileObject.name);
-    if (fileExists) {
+    const formData = await request.formData();
+    const file = formData.get('file');
+    if (!file) {
         return NextResponse.json(
-            { message: 'File already exists' }, { status: 409 }
+            { message: 'File not found' }, { status: 400 }
         );
     }
 
-    const result = await postFileByTypeIpfs(CIDType.PRODUCT, fileObject.name, fileObject);
+    const fileObject = await convertFileToBuffer(file);
+    const productCID = cidManager.getProductCID();
 
-    return NextResponse.json(
-        { message: 'File uploaded successfully', result },
-        { status: 200 }
-    );
+    try {
+        const fileExists = await getFileFromIpfs(productCID, fileObject.name);
+        if (fileExists) {
+            return NextResponse.json(
+                { message: 'File already exists' }, { status: 409 }
+            );
+        }
+
+        const result = await postFileByTypeIpfs(CIDType.PRODUCT, fileObject.name, fileObject);
+
+        return NextResponse.json(
+            { message: 'File uploaded successfully', result },
+            { status: 200 }
+        );
+    } catch (error: any) {
+        return NextResponse.json(
+            { message: 'Error uploading file', error: error.response.message },
+            { status: error.response.status }
+        )
+    }
 }
