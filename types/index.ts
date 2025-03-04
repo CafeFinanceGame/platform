@@ -18,17 +18,17 @@ enum ItemType {
 
 enum ProductItemType {
   // Coffee Company
-  COFFEE_BEAN, 
+  COFFEE_BEAN,
   BLACK_COFFEE,
   MILK_COFFEE,
   // Material Company
-  POWDERED_MILK, 
+  POWDERED_MILK,
   WATER,
-  MILK, 
+  MILK,
   // Machine Company
   MACHINE_MATERIAL,
   KETTLE,
-  MILK_FROTHER 
+  MILK_FROTHER
 }
 
 enum EventItemType {
@@ -104,7 +104,7 @@ type ProductItemInfo = {
   energy: number; // uint8
   durability: number; // uint8
   decayRate: number; // uint8
-  decayPeriod: number; 
+  decayPeriod: number;
 }
 
 type RawMaterialProductInfo = {
@@ -125,3 +125,23 @@ type ListedItem = {
   owner: string;
   price: number;
 }
+
+export type {
+  PlayerRole,
+  ItemType,
+  ProductItemType,
+  EventItemType,
+  ContractRegistryType,
+  CompanyAcitivityEnergyFeeType,
+  Company,
+  Item,
+  EventItem,
+  ProductEconomy,
+  ActivityEnergyFee,
+  ManufacturedProduct,
+  ProductItem,
+  ProductItemInfo,
+  RawMaterialProductInfo,
+  CAFDecayableItem,
+  ListedItem
+};
