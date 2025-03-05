@@ -79,6 +79,7 @@ type ProductEconomy = {
   costPrice: number;
   insurancePrice: number;
   freightPrice: number;
+  manufacturedPerHour?: number;
 }
 
 type ActivityEnergyFee = {
