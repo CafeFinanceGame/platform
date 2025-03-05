@@ -128,12 +128,6 @@ type ListedItem = {
 }
 
 export type {
-  PlayerRole,
-  ItemType,
-  ProductItemType,
-  EventItemType,
-  ContractRegistryType,
-  CompanyAcitivityEnergyFeeType,
   Company,
   Item,
   EventItem,
@@ -146,3 +140,12 @@ export type {
   CAFDecayableItem,
   ListedItem
 };
+
+export {
+  PlayerRole,
+  ItemType,
+  ProductItemType,
+  EventItemType,
+  ContractRegistryType,
+  CompanyAcitivityEnergyFeeType
+}
