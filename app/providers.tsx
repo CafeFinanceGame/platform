@@ -39,8 +39,8 @@ createAppKit({
   metadata: {
     name: app.NAME,
     description: app.DESCRIPTION,
-    url: 'https://cafifinance.com',
-    icons: ['https://cafifinance.com/favicon.ico'],
+    url: app.URL,
+    icons: app.ICONS,
   },
   themeMode: 'light',
   projectId: constants.walletconnet.PROJECT_ID
