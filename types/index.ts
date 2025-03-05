@@ -7,13 +7,15 @@ export type IconSvgProps = SVGProps<SVGSVGElement> & {
 enum PlayerRole {
   COFFEE_COMPANY,
   MACHINE_COMPANY,
-  MATERIAL_COMPANY
+  MATERIAL_COMPANY,
+  NONE
 }
 
 enum ItemType {
   UTILITY,
   PRODUCT,
-  EVENT
+  EVENT,
+  NONE
 }
 
 enum ProductItemType {
@@ -28,7 +30,8 @@ enum ProductItemType {
   // Machine Company
   MACHINE_MATERIAL,
   KETTLE,
-  MILK_FROTHER
+  MILK_FROTHER,
+  NONE
 }
 
 enum EventItemType {
@@ -45,12 +48,14 @@ enum ContractRegistryType {
   CAF_COMPANY_ITEMS_CONTRACT,
   CAF_PRODUCT_ITEMS_CONTRACT,
   CAF_EVENT_ITEMS_CONTRACT,
-  CAF_TOKEN_CONTRACT
+  CAF_TOKEN_CONTRACT,
+  NONE
 }
 
 enum CompanyAcitivityEnergyFeeType {
   MANUFACTURE,
-  SWAP
+  SWAP,
+  NONE
 }
 
 type Company = {
