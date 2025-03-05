@@ -17,7 +17,15 @@ const localTypeFolders = process.env.LOCAL_FOLDER as string;
 	fs.mkdirSync(localTypeFolders);
 }
 
+function validatePinataCredentials() {
+	if (!process.env.NEXT_PUBLIC_PINATA_API_KEY || !process.env.NEXT_PUBLIC_PINATA_SECRET_API_KEY) {
+		throw new Error('Pinata API keys are not provided');
+	}
+}
+
 export async function postFileByTypeIpfs(type: any, id: any, fileObject: any) {
+	validatePinataCredentials();
+
 	// Create or access the type folder
 	const typeFolder = path.join(localTypeFolders, type);
 
@@ -62,6 +70,7 @@ export async function getListIpfs(query: {
 	pageOffset?: number;
 } = {}
 ) {
+	validatePinataCredentials();
 	try {
 		const queryStr = new URLSearchParams(
 			Object.entries(query)
@@ -85,6 +94,7 @@ export async function getListIpfs(query: {
 }
 
 export async function getFileFromIpfs(cid: string, fileName: string) {
+	validatePinataCredentials();
 	try {
 		const result = await axios.get(`${pinataGateway}${cid}/${fileName}`);
 		return result.data;
@@ -97,6 +107,7 @@ export async function getFileFromIpfs(cid: string, fileName: string) {
 }
 
 export async function postFileToIpfs(fileObject: any) {
+	validatePinataCredentials();
 	try {
 		const result = await pinataClient.pinFileToIPFS(fileObject, {
 			pinataMetadata: { 
