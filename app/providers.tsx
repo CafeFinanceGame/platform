@@ -44,7 +44,7 @@ createAppKit({
   },
   themeMode: 'light',
   projectId: constants.walletconnet.PROJECT_ID
-})
+});
 
 export function Providers({ children, themeProps, cookies }: ProvidersProps) {
   const router = useRouter();

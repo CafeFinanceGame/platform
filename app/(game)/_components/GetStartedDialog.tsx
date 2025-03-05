@@ -6,12 +6,14 @@ import { IoPlayCircle } from "react-icons/io5";
 import { useAppKit } from "@reown/appkit/react";
 import { useAccount } from "wagmi";
 import clsx from "clsx";
+import { useCompanyActions } from "@/hooks/useCAFItems";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> { }
 export const GetStartedDialog: React.FC<Props> = () => {
+    const { hasCompany } = useCompanyActions();
     const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
     const { open } = useAppKit();
-    const { isConnected } = useAccount();
+    const { isConnected, address } = useAccount();
 
     return (
         <>
@@ -41,14 +43,18 @@ export const GetStartedDialog: React.FC<Props> = () => {
                             Cancel
                         </CAFButton>
                         <CAFButton
-                            isDisabled={isConnected}
-                            onPress={() => open()}
+                            variant={isConnected ? "bordered" : "solid"}
+                            onPress={() => {
+                                open();
+                            }}
                             className={clsx(
                                 "text-default-900",
-                                isConnected ? "bg-default-500 cursor-not-allowed" : "bg-default-50 hover:bg-primary hover:text-default"
+                                isConnected ? "border-default-500 text-default-500 font-medium" : "bg-default-50 hover:bg-primary hover:text-default"
                             )}
                         >
-                            {isConnected ? "Connected" : "Connect"}
+                            {
+                                address ? address.slice(0, 6) + "..." + address.slice(-4) : "Connect"
+                            }
                         </CAFButton>
                     </ModalFooter>
                 </ModalContent>

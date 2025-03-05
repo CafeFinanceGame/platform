@@ -1,8 +1,8 @@
 export default {
     NAME: "CaFi Game",
     DESCRIPTION: "CaFi Game is a decentralized game that allows you to earn money by playing games.",
-    URL: "localhost:3000",
+    URL: "https://cafigame.vercel.app",
     ICONS: [
-        "localhost:3000/favicon.ico"
+        "https://cafigame.vercel.app/favicon.ico",
     ]
 }
