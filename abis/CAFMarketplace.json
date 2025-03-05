@@ -1,0 +1,524 @@
+[
+    {
+        "inputs": [
+            {
+                "name": "_contractRegistry",
+                "internalType": "address",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    {
+        "inputs": [],
+        "name": "AccessControlBadConfirmation",
+        "type": "error"
+    },
+    {
+        "inputs": [
+            {
+                "name": "account",
+                "internalType": "address",
+                "type": "address"
+            },
+            {
+                "name": "neededRole",
+                "internalType": "bytes32",
+                "type": "bytes32"
+            }
+        ],
+        "name": "AccessControlUnauthorizedAccount",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "ReentrancyGuardReentrantCall",
+        "type": "error"
+    },
+    {
+        "inputs": [
+            {
+                "indexed": true,
+                "name": "_itemId",
+                "internalType": "uint256",
+                "type": "uint256"
+            },
+            {
+                "indexed": true,
+                "name": "_buyer",
+                "internalType": "address",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "name": "_seller",
+                "internalType": "address",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "name": "_price",
+                "internalType": "uint256",
+                "type": "uint256"
+            }
+        ],
+        "name": "ItemBought",
+        "anonymous": false,
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "indexed": true,
+                "name": "_itemId",
+                "internalType": "uint256",
+                "type": "uint256"
+            },
+            {
+                "indexed": true,
+                "name": "_owner",
+                "internalType": "address",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "name": "_price",
+                "internalType": "uint256",
+                "type": "uint256"
+            }
+        ],
+        "name": "ItemListed",
+        "anonymous": false,
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "indexed": true,
+                "name": "_itemId",
+                "internalType": "uint256",
+                "type": "uint256"
+            },
+            {
+                "indexed": true,
+                "name": "_owner",
+                "internalType": "address",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "name": "_price",
+                "internalType": "uint256",
+                "type": "uint256"
+            }
+        ],
+        "name": "ItemPriceUpdated",
+        "anonymous": false,
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "indexed": true,
+                "name": "_itemId",
+                "internalType": "uint256",
+                "type": "uint256"
+            },
+            {
+                "indexed": true,
+                "name": "_owner",
+                "internalType": "address",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "name": "_price",
+                "internalType": "uint256",
+                "type": "uint256"
+            }
+        ],
+        "name": "ItemResold",
+        "anonymous": false,
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "indexed": true,
+                "name": "_itemId",
+                "internalType": "uint256",
+                "type": "uint256"
+            },
+            {
+                "indexed": true,
+                "name": "_owner",
+                "internalType": "address",
+                "type": "address"
+            }
+        ],
+        "name": "ItemUnlisted",
+        "anonymous": false,
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "indexed": true,
+                "name": "role",
+                "internalType": "bytes32",
+                "type": "bytes32"
+            },
+            {
+                "indexed": true,
+                "name": "previousAdminRole",
+                "internalType": "bytes32",
+                "type": "bytes32"
+            },
+            {
+                "indexed": true,
+                "name": "newAdminRole",
+                "internalType": "bytes32",
+                "type": "bytes32"
+            }
+        ],
+        "name": "RoleAdminChanged",
+        "anonymous": false,
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "indexed": true,
+                "name": "role",
+                "internalType": "bytes32",
+                "type": "bytes32"
+            },
+            {
+                "indexed": true,
+                "name": "account",
+                "internalType": "address",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "name": "sender",
+                "internalType": "address",
+                "type": "address"
+            }
+        ],
+        "name": "RoleGranted",
+        "anonymous": false,
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "indexed": true,
+                "name": "role",
+                "internalType": "bytes32",
+                "type": "bytes32"
+            },
+            {
+                "indexed": true,
+                "name": "account",
+                "internalType": "address",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "name": "sender",
+                "internalType": "address",
+                "type": "address"
+            }
+        ],
+        "name": "RoleRevoked",
+        "anonymous": false,
+        "type": "event"
+    },
+    {
+        "outputs": [
+            {
+                "name": "",
+                "internalType": "bytes32",
+                "type": "bytes32"
+            }
+        ],
+        "inputs": [],
+        "name": "ADMIN_ROLE",
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "outputs": [
+            {
+                "name": "",
+                "internalType": "bytes32",
+                "type": "bytes32"
+            }
+        ],
+        "inputs": [],
+        "name": "DEFAULT_ADMIN_ROLE",
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "outputs": [
+            {
+                "name": "",
+                "internalType": "bytes32",
+                "type": "bytes32"
+            }
+        ],
+        "inputs": [],
+        "name": "SYSTEM_ROLE",
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "outputs": [],
+        "inputs": [
+            {
+                "name": "_itemId",
+                "internalType": "uint256",
+                "type": "uint256"
+            }
+        ],
+        "name": "buy",
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "outputs": [
+            {
+                "name": "",
+                "internalType": "uint256",
+                "type": "uint256"
+            }
+        ],
+        "inputs": [
+            {
+                "name": "_itemId",
+                "internalType": "uint256",
+                "type": "uint256"
+            }
+        ],
+        "name": "calculateResalePrice",
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "outputs": [
+            {
+                "name": "",
+                "internalType": "bytes32",
+                "type": "bytes32"
+            }
+        ],
+        "inputs": [
+            {
+                "name": "role",
+                "internalType": "bytes32",
+                "type": "bytes32"
+            }
+        ],
+        "name": "getRoleAdmin",
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "outputs": [],
+        "inputs": [
+            {
+                "name": "role",
+                "internalType": "bytes32",
+                "type": "bytes32"
+            },
+            {
+                "name": "account",
+                "internalType": "address",
+                "type": "address"
+            }
+        ],
+        "name": "grantRole",
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "outputs": [
+            {
+                "name": "",
+                "internalType": "bool",
+                "type": "bool"
+            }
+        ],
+        "inputs": [
+            {
+                "name": "role",
+                "internalType": "bytes32",
+                "type": "bytes32"
+            },
+            {
+                "name": "account",
+                "internalType": "address",
+                "type": "address"
+            }
+        ],
+        "name": "hasRole",
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "outputs": [],
+        "inputs": [
+            {
+                "name": "_itemId",
+                "internalType": "uint256",
+                "type": "uint256"
+            },
+            {
+                "name": "_price",
+                "internalType": "uint256",
+                "type": "uint256"
+            }
+        ],
+        "name": "list",
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "outputs": [
+            {
+                "name": "id",
+                "internalType": "uint256",
+                "type": "uint256"
+            },
+            {
+                "name": "owner",
+                "internalType": "address",
+                "type": "address"
+            },
+            {
+                "name": "price",
+                "internalType": "uint256",
+                "type": "uint256"
+            }
+        ],
+        "inputs": [
+            {
+                "name": "",
+                "internalType": "uint256",
+                "type": "uint256"
+            }
+        ],
+        "name": "listedItems",
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "outputs": [],
+        "inputs": [
+            {
+                "name": "role",
+                "internalType": "bytes32",
+                "type": "bytes32"
+            },
+            {
+                "name": "callerConfirmation",
+                "internalType": "address",
+                "type": "address"
+            }
+        ],
+        "name": "renounceRole",
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "outputs": [],
+        "inputs": [
+            {
+                "name": "role",
+                "internalType": "bytes32",
+                "type": "bytes32"
+            },
+            {
+                "name": "account",
+                "internalType": "address",
+                "type": "address"
+            }
+        ],
+        "name": "revokeRole",
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "outputs": [],
+        "inputs": [
+            {
+                "name": "_itemId",
+                "internalType": "uint256",
+                "type": "uint256"
+            }
+        ],
+        "name": "sell",
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "outputs": [],
+        "inputs": [],
+        "name": "setUp",
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "outputs": [
+            {
+                "name": "",
+                "internalType": "bool",
+                "type": "bool"
+            }
+        ],
+        "inputs": [
+            {
+                "name": "interfaceId",
+                "internalType": "bytes4",
+                "type": "bytes4"
+            }
+        ],
+        "name": "supportsInterface",
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "outputs": [],
+        "inputs": [
+            {
+                "name": "_itemId",
+                "internalType": "uint256",
+                "type": "uint256"
+            }
+        ],
+        "name": "unlist",
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "outputs": [],
+        "inputs": [
+            {
+                "name": "_itemId",
+                "internalType": "uint256",
+                "type": "uint256"
+            },
+            {
+                "name": "_price",
+                "internalType": "uint256",
+                "type": "uint256"
+            }
+        ],
+        "name": "updatePrice",
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
+]

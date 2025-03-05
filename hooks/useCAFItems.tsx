@@ -1,6 +1,6 @@
 import { useAccount } from 'wagmi'
 import { waitForTransactionReceipt, writeContract, readContract } from '@wagmi/core'
-import type { ActivityEnergyFee, Company, PlayerRole, ProductEconomy, ProductItem, ProductItemType } from '@/types';
+import type { Company, PlayerRole, ProductItem, ProductItemType } from '@/types';
 import constants from '@/utils/constants';
 import wagmi from "@/utils/wagmi";
 
@@ -255,7 +255,7 @@ export const useProductActions = (): ICAFProductActions => {
                 throw error;
             }
         },
-        
+
         updateProductItem: async (
             itemId: number,
             price: number,
