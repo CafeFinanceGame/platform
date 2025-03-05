@@ -1,23 +1,31 @@
-import { convertFileToBuffer } from "@/lib/buffer";
+import { convertBufferToJson, convertFileToBuffer } from "@/lib/buffer";
 import { cidManager, CIDType } from "@/utils/api";
 import { getFileFromIpfs, getListIpfs, postFileByTypeIpfs } from "@/utils/pinataClient";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET() {
+
+export async function GET(request: NextRequest) {
+    const urlSearchParams = new URLSearchParams(request.url);
+    const params = Object.fromEntries(urlSearchParams.entries());
+    const { type } = params;
+    
+    const productCID = cidManager.getProductCID();
+
     try {
-        const lists = await getListIpfs();
-        return NextResponse.json(lists.data, { status: 200 });
+        const file = await getFileFromIpfs(productCID, type + '.json');
+        const fileObject = convertBufferToJson(file.buffer);
+
+        return NextResponse.json(fileObject, { status: 200 });
     } catch (error: any) {
         return NextResponse.json(
-            { message: 'Error getting list' },
-            { status: error.response.status }
+            { message: 'Error getting file', error: error.response?.message },
+            { status: error.response?.status }
         );
     }
 }
 
 
 export async function POST(request: NextRequest) {
-
     const formData = await request.formData();
     const file = formData.get('file');
     if (!file) {
@@ -30,13 +38,6 @@ export async function POST(request: NextRequest) {
     const productCID = cidManager.getProductCID();
 
     try {
-        const fileExists = await getFileFromIpfs(productCID, fileObject.name);
-        if (fileExists) {
-            return NextResponse.json(
-                { message: 'File already exists' }, { status: 409 }
-            );
-        }
-
         const result = await postFileByTypeIpfs(CIDType.PRODUCT, fileObject.name, fileObject);
 
         return NextResponse.json(
@@ -45,8 +46,8 @@ export async function POST(request: NextRequest) {
         );
     } catch (error: any) {
         return NextResponse.json(
-            { message: 'Error uploading file', error: error.response.message },
-            { status: error.response.status }
+            { message: 'Error uploading file', error: error.response?.data || '' }, 
+            { status: error.response?.status || 500 }
         )
     }
 }

@@ -1,17 +1,24 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getFileFromIpfs, getListIpfs, postFileByTypeIpfs } from "@/utils/pinataClient"
 import { cidManager, CIDType } from "@/utils/api"
-import { convertFileToBuffer } from "@/lib/buffer";
+import { convertBufferToJson, convertFileToBuffer } from "@/lib/buffer";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+    const urlSearchParams = new URLSearchParams(request.url);
+    const params = Object.fromEntries(urlSearchParams.entries());
+    const { type } = params;
+
     const eventCID = cidManager.getEventCID();
-    
+
     try {
-        const lists = await getListIpfs();
-        return NextResponse.json(lists.data, { status: 200 });
+        const file = await getFileFromIpfs(eventCID, type + '.json');
+        
+        const fileObject = convertBufferToJson(file.buffer);
+
+        return NextResponse.json(fileObject, { status: 200 });
     } catch (error: any) {
         return NextResponse.json(
-            { message: 'Error getting list', error: error.response.message },
+            { message: 'Error getting file', error: error.response.message },
             { status: error.response.status }
         );
     }
