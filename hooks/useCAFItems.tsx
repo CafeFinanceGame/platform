@@ -1,6 +1,6 @@
 import { useAccount } from 'wagmi'
 import { waitForTransactionReceipt, writeContract, readContract } from '@wagmi/core'
-import type { Company, PlayerRole } from '@/types';
+import type { ActivityEnergyFee, Company, PlayerRole, ProductEconomy, ProductItem, ProductItemType } from '@/types';
 import constants from '@/utils/constants';
 import wagmi from "@/utils/wagmi";
 
@@ -11,26 +11,28 @@ import CAFCompanyItemsAbi from '@/abis/CAFCompanyItems.json'
 
 export interface ICAFCompanyActions {
     create(owner: string, role: PlayerRole): Promise<number>;
-
     get(companyId: number): Promise<Company>;
-
     getByOwner(owner: string): Promise<number>;
-
     replenishEnergy(companyId: number, itemId: number): Promise<void>;
-
     useEnergy(companyId: number, amount: number): Promise<void>;
-
     role(companyId: number): Promise<PlayerRole>;
-
     energy(companyId: number): Promise<number>;
-
     isCompany(id: number): Promise<boolean>;
-
     hasCompany(owner: string): Promise<boolean>;
 }
 
-interface ICAFProductActions { }
-interface ICAFItemsActions extends ICAFCompanyActions, ICAFProductActions { }
+interface ICAFProductActions {
+    create(companyId: number, type: ProductItemType): Promise<number>;
+    createBatch(type: ProductItemType, amount: number): Promise<number[]>;
+    get(id: number): Promise<ProductItem>;
+    updateProductItem(
+        itemId: number,
+        price: number,
+        energy: number,
+        durability: number
+    ): Promise<void>
+}
+
 
 export const useCompanyActions = (): ICAFCompanyActions => {
     const account = useAccount();
@@ -185,5 +187,90 @@ export const useCompanyActions = (): ICAFCompanyActions => {
                 throw error;
             }
         }
+    }
+}
+
+export const useProductActions = (): ICAFProductActions => {
+    const account = useAccount();
+
+    return {
+        create: async (companyId: number, type: ProductItemType): Promise<number> => {
+            try {
+                const hash = await writeContract(config, {
+                    abi: CAFCompanyItemsAbi,
+                    address: contracts.CAF_COMPANY_ITEMS_ADDRESS,
+                    functionName: 'createProduct',
+                    args: [companyId, type],
+                    account: account.address
+                });
+
+                const receitp = await waitForTransactionReceipt(config, {
+                    hash
+                });
+
+                const id: number = Number(receitp.logs[0].data);
+
+                return id;
+            } catch (error) {
+                console.error('Error creating product', error);
+                throw error;
+            }
+        },
+
+        createBatch: async (type: ProductItemType, amount: number): Promise<number[]> => {
+            try {
+                const hash = await writeContract(config, {
+                    abi: CAFCompanyItemsAbi,
+                    address: contracts.CAF_COMPANY_ITEMS_ADDRESS,
+                    functionName: 'createProductBatch',
+                    args: [type, amount],
+                    account: account.address
+                });
+
+                const receitp = await waitForTransactionReceipt(config, {
+                    hash
+                });
+
+                const ids: number[] = receitp.logs.map(log => Number(log.data));
+
+                return ids;
+            } catch (error) {
+                console.error('Error creating product batch', error);
+                throw error;
+            }
+        },
+
+        get: async (id: number): Promise<ProductItem> => {
+            try {
+                const product = await readContract(config, {
+                    abi: CAFCompanyItemsAbi,
+                    address: contracts.CAF_COMPANY_ITEMS_ADDRESS,
+                    functionName: 'get',
+                    args: [id]
+                });
+
+                return product as ProductItem;
+            } catch (error) {
+                console.error('Error getting product', error);
+                throw error;
+            }
+        },
+        
+        updateProductItem: async (
+            itemId: number,
+            price: number,
+            energy: number,
+            durability: number
+        ): Promise<void> => {
+            await writeContract(config, {
+                abi: CAFCompanyItemsAbi,
+                address: contracts.CAF_COMPANY_ITEMS_ADDRESS,
+                functionName: 'updateProductItem',
+                args: [itemId, price, energy, durability],
+                account: account.address
+            });
+
+            return;
+        },
     }
 }
