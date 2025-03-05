@@ -1,6 +1,6 @@
 import { useAccount } from 'wagmi'
-import { waitForTransactionReceipt, writeContract, readContract } from '@wagmi/core'
-import type { Company, ListedItem, PlayerRole, ProductItem, ProductItemType } from '@/types';
+import { writeContract, readContract } from '@wagmi/core'
+import type { ListedItem } from '@/types';
 import constants from '@/utils/constants';
 import wagmi from "@/utils/wagmi";
 import CAFMarketplaceAbi from '@/abis/CAFMarketplace.json'
