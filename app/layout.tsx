@@ -47,7 +47,8 @@ export default async function RootLayout({
         )}
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }} cookies={cookies}>
-          <div className="relative flex h-screen">
+          <div className="flex h-screen">
+            <img src="/assets/page-cover.png" alt="Page Cover" className="absolute object-cover w-full h-full z-0 pointer-events-none" />
             <Sidebar />
             <div className="flex flex-col flex-grow">
               <Topbar />

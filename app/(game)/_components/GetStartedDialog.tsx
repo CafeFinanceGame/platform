@@ -46,7 +46,7 @@ export const GetStartedDialog: React.FC<Props> = () => {
             </CAFButton>
             <Modal
                 isOpen={isOpen}
-                onClose={close}
+                onClose={onClose}
                 classNames={{
                     base: "bg-default rounded-2xl",
                     closeButton: "hidden",
