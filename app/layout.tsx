@@ -10,6 +10,8 @@ import { fontMontserrat } from "@/config/fonts";
 import { Navbar } from "@/components/navbar";
 import { Sidebar } from "./_components/Sidebar";
 import { Topbar } from "./_components/Topbar";
+import { Navbar1 } from "./_components/Navbar1";
+import { SearchEngine } from "./_components/SearchEngine";
 
 export const metadata: Metadata = {
   title: {
@@ -51,6 +53,10 @@ export default async function RootLayout({
             <img src="/assets/page-cover.png" alt="Page Cover" className="absolute object-cover w-full h-full z-0 pointer-events-none" />
             <Sidebar />
             <div className="flex flex-col flex-grow">
+              <div className="w-full flex flex-row items-center">
+                <SearchEngine />
+                <Navbar1 />
+              </div>
               <Topbar />
               <main className="flex-grow">
                 {children}
