@@ -1,9 +1,11 @@
 import { useAccount } from 'wagmi'
 import { writeContract, readContract } from '@wagmi/core'
-import type { ListedItem } from '@/types';
+import type { ListedItem, ProductItem } from '@/types';
 import constants from '@/utils/constants';
 import wagmi from "@/utils/wagmi";
 import CAFMarketplaceAbi from '@/abis/CAFMarketplace.json'
+import { useCompanyActions, useProductActions } from './useCAFItems';
+import { zeroAddress } from 'viem';
 
 const contracts = constants.contracts;
 const config = wagmi.wagmiConfig;
@@ -14,6 +16,11 @@ interface ICAFMarketplaceActions {
     unlist(itemId: number): Promise<void>;
     updatePrice(itemId: number, price: number): Promise<void>;
     getListedItem(itemId: number): Promise<ListedItem>;
+    getAllListedItems(): Promise<{
+        product: ProductItem;
+        listedItem: ListedItem;
+        metadata?: any;
+    }[]>;
 
     // Resale store actions
     sell(itemId: number): Promise<void>;
@@ -22,6 +29,7 @@ interface ICAFMarketplaceActions {
 
 export const useCAFMarketplace = (): ICAFMarketplaceActions => {
     const account = useAccount();
+    const { get: getProduct } = useProductActions();
 
     return {
         buy: async (itemId: number): Promise<void> => {
@@ -122,6 +130,48 @@ export const useCAFMarketplace = (): ICAFMarketplaceActions => {
                 return item as ListedItem;
             } catch (error) {
                 console.error('Error getting listed item', error);
+                throw error;
+            }
+        },
+
+        getAllListedItems: async (): Promise<{
+            product: ProductItem;
+            listedItem: ListedItem;
+            metadata?: any;
+        }[]> => {
+            try {
+                const items = [] as {
+                    product: ProductItem;
+                    listedItem: ListedItem;
+                    metadata?: any;
+                }[];
+
+                for (let i = 1; i < 10; i++) {
+                    const listedItem = await readContract(config, {
+                        abi: CAFMarketplaceAbi,
+                        address: contracts.CAF_MARKETPLACE_ADDRESS,
+                        functionName: 'listedItems',
+                        args: [i]
+                    }) as ListedItem;
+
+                    if (listedItem.owner === zeroAddress) return items;
+
+                    const product = await getProduct(i);
+
+                    items.push({
+                        listedItem,
+                        product
+                    });
+                }
+
+                return items as {
+                    product: ProductItem;
+                    listedItem: ListedItem;
+                    metadata?: any;
+                }[];
+
+            } catch (error) {
+                console.error('Error getting all listed items', error);
                 throw error;
             }
         }

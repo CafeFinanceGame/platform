@@ -5,25 +5,19 @@ import {
     NavbarBrand
 } from "@heroui/navbar";
 import NextLink from "next/link";
+import { Navbar1 } from "./Navbar1";
+import { SearchEngine } from "./SearchEngine";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> { }
 export const Topbar: React.FC<Props> = () => {
     return (
-        <HeroUINavbar maxWidth="full" position="sticky" isBlurred={false} className="bg-transparent">
-            <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
-                <NavbarBrand as="li" className="gap-3 max-w-fit">
-                    <NextLink className="flex justify-start items-center gap-1" href="/">
-                        <p className="font-bold text-inherit">ACME</p>
-                    </NextLink>
-                </NavbarBrand>
-                <ul className="hidden lg:flex gap-4 justify-start ml-2">
-                </ul>
-            </NavbarContent>
-
-            <NavbarMenu>
-                <div className="mx-4 mt-2 flex flex-col gap-2">
+        <HeroUINavbar maxWidth="full" position="sticky" isBlurred className="bg-transparent">
+            <NavbarContent justify="center" className="w-full">
+                <div className="w-full flex flex-row items-center justify-between">
+                    <SearchEngine />
+                    <Navbar1 />
                 </div>
-            </NavbarMenu>
+            </NavbarContent>
         </HeroUINavbar>
     );
 }

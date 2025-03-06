@@ -22,7 +22,9 @@ export const Sidebar: React.FC<Props> = () => {
     return (
         <aside className="h-full w-24 p-2 z-10">
             <div className="flex flex-col items-center gap-8">
-                <Logo />
+                <div className="rounded-full bg-default p-1">
+                    <Logo />
+                </div>
                 <ul className="p-1 rounded-full bg-default flex flex-col items-center justify-center">
                     {
                         links.map((link) => (

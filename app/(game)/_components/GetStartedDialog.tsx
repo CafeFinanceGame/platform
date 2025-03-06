@@ -42,7 +42,7 @@ export const GetStartedDialog: React.FC<Props> = () => {
                     ownerHasCompany ? router.push('/dashboard/company') : onOpen();
                 }}
             >
-                Play
+                {address ? "Play" : "Get Started"}
             </CAFButton>
             <Modal
                 isOpen={isOpen}

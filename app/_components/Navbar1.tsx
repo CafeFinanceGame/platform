@@ -9,21 +9,26 @@ import { useQuery } from "@tanstack/react-query";
 import { FaStore } from "react-icons/fa6";
 import { IoNotifications } from "react-icons/io5";
 import { useAccount } from "wagmi";
+import numeral from "numeral";
+
 interface Props extends React.HTMLAttributes<HTMLDivElement> { }
 export const Navbar1: React.FC<Props> = () => {
     const { open } = useAppKit();
     const { address } = useAccount();
     const { balanceOf } = useCAFToken();
 
-    const { data: balance } = useQuery({
+    const { data: balance, isSuccess, isError, isLoading: isBalanceLoading } = useQuery({
         queryKey: ['balance', address],
         queryFn: async () => {
-            if(address) {
-                return await balanceOf();
+            if (address) {
+                const balance = await balanceOf(address);
+
+                return balance / 1e18;
             }
         },
         enabled: !!address
     })
+
     const navs = [
         {
             icon: <FaStore />,
@@ -36,27 +41,31 @@ export const Navbar1: React.FC<Props> = () => {
     ];
 
     const Resources = () => {
+        if (!address) return null;
+
         return (
             <ul>
                 <Button
                     as={"li"}
                     variant="light"
-                    radius="full"
-                    startContent={<Image src="/assets/cafi-token.png" alt="CaFi Token" />}
-                >   
-
+                    className="text-foreground-900"
+                    endContent={<Image src="/assets/cafi-token.png" alt="CaFi Token" className="w-5 aspect-square" />}
+                    isLoading={isBalanceLoading}
+                >
+                    {isSuccess ? numeral(balance).format('0.0a') : '0'}
                 </Button>
             </ul>
         )
     }
 
     return (
-        <nav className="w-fit rounded-full p-2 text-default-900 bg-foreground-100">
-            <ul className="flex gap-4">
+        <nav className="w-fit h-fit p-1 rounded-full text-foreground-900 bg-foreground-100">
+            <ul className="flex gap-1">
                 {navs.map((nav, index) => (
                     <Button
                         key={index}
                         as={Link}
+                        className="text-foreground-900"
                         variant="light"
                         radius="full"
                         isIconOnly
@@ -64,10 +73,12 @@ export const Navbar1: React.FC<Props> = () => {
                         {nav.icon}
                     </Button>
                 ))}
+                <Resources />
                 {
                     address && (
                         <User
                             avatarProps={{
+                                size: 'sm',
                                 alt: 'User Avatar',
                                 radius: 'full'
                             }}

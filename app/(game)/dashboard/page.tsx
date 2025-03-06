@@ -5,7 +5,6 @@ import { ProductItem } from "../_components/items";
 export default function HomePage() {
     return (
         <PageContainer>
-            <ProductItem />
         </PageContainer>
     );
 }

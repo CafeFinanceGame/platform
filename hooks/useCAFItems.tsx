@@ -244,7 +244,7 @@ export const useProductActions = (): ICAFProductActions => {
             try {
                 const product = await readContract(config, {
                     abi: CAFCompanyItemsAbi,
-                    address: contracts.CAF_COMPANY_ITEMS_ADDRESS,
+                    address: contracts.CAF_PRODUCT_ITEMS_ADDRESS,
                     functionName: 'get',
                     args: [id]
                 });
