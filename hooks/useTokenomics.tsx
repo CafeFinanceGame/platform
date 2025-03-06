@@ -9,7 +9,7 @@ const config = wagmi.wagmiConfig;
 
 interface ICAFTokenActions {
     approve(amount: number): Promise<void>;
-    balanceOf(): Promise<number>;
+    balanceOf(owner: string): Promise<number>;
     transfer(to: string, amount: number): Promise<void>;
 }
 
@@ -31,13 +31,17 @@ export const useCAFToken = (): ICAFTokenActions => {
             }
         },
 
-        balanceOf: async (): Promise<number> => {
+        balanceOf: async (owner: string): Promise<number> => {
+            if (!owner) {
+                throw new Error('Error getting balance: Owner address is required');
+            }
+
             try {
                 const balance = await readContract(config, {
                     abi: CAFTokenAbi,
                     address: contracts.CAF_TOKEN_ADDRESS,
                     functionName: 'balanceOf',
-                    args: [account.address]
+                    args: [owner]
                 });
 
                 return Number(balance);
@@ -48,6 +52,10 @@ export const useCAFToken = (): ICAFTokenActions => {
         },
 
         transfer: async (to: string, amount: number): Promise<void> => {
+            if (!to) {
+                throw new Error('Error transferring token: Recipient address is required');
+            }
+
             try {
                 await writeContract(config, {
                     abi: CAFTokenAbi,
