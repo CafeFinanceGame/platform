@@ -4,7 +4,9 @@ export type IconSvgProps = SVGProps<SVGSVGElement> & {
   size?: number;
 };
 
-enum PlayerRole {
+enum CompanyType {
+  UNKNOWN,
+  FACTORY_COMPANY, // Only system has role this
   COFFEE_COMPANY,
   MACHINE_COMPANY,
   MATERIAL_COMPANY
@@ -17,45 +19,44 @@ enum ItemType {
 }
 
 enum ProductItemType {
+  UNKNOWN,
   // Coffee Company
-  COFFEE_BEAN,
-  BLACK_COFFEE,
-  MILK_COFFEE,
+  COFFEE_BEAN, // Default material product that only coffee company can import
+  COFFEE, // Formula: Coffee Bean + Water + Kettle
   // Material Company
-  POWDERED_MILK,
-  WATER,
-  MILK,
+  WATER, // Default material product that only material company can import
+  MILK, // Formula: Water + Kettle
   // Machine Company
-  MACHINE_MATERIAL,
-  KETTLE,
-  MILK_FROTHER
+  MACHINE_MATERIAL, // Default material product that only machine company can import
+  KETTLE // Formula: Machine Material + Water
 }
 
 enum EventItemType {
-  RawMaterialPriceFluctuations,
-  MarketSupplyImbalance
+  UNKNOWN,
+  SUPPLY_FLUCTUATION,
+  WEATHER_VARIATION
 }
 
 enum ContractRegistryType {
-  CAF_MARKETPLACE_CONTRACT,
-  CAF_POOL_CONTRACT,
+  CAF_TOKEN_CONTRACT,
   CAF_GAME_MANAGER_CONTRACT,
+  CAF_MARKETPLACE_CONTRACT,
   CAF_GAME_ECONOMY_CONTRACT,
-  CAF_MATERIAL_FACTORY_CONTRACT,
-  CAF_COMPANY_ITEMS_CONTRACT,
-  CAF_PRODUCT_ITEMS_CONTRACT,
-  CAF_EVENT_ITEMS_CONTRACT,
-  CAF_TOKEN_CONTRACT
+  CAF_ITEMS_MANAGER_CONTRACT
 }
 
 enum CompanyAcitivityEnergyFeeType {
   MANUFACTURE,
-  SWAP
+  BUY,
+  SELL,
+  LIST,
+  UNLIST,
+  UPDATE
 }
 
 type Company = {
   owner: string;
-  role: PlayerRole;
+  role: CompanyType;
   energy: number;
 }
 
@@ -74,12 +75,8 @@ type EventItem = {
 type ProductEconomy = {
   energy: number;
   durability: number;
-  decayRate: number; // uint8
-  decayPeriod: number;
+  decayRatePerHour: number;
   costPrice: number;
-  insurancePrice: number;
-  freightPrice: number;
-  manufacturedPerHour?: number;
 }
 
 type ActivityEnergyFee = {
@@ -100,11 +97,11 @@ type ProductItem = {
   expTime: number;
 }
 
-type ProductItemInfo = {
+interface ProductItemInfo {
   productType: ProductItemType;
-  energy: number; // uint8
-  durability: number; // uint8
-  decayRate: number; // uint8
+  energy: number;
+  durability: number;
+  decayRate: number;
   decayPeriod: number;
 }
 
@@ -115,12 +112,6 @@ type RawMaterialProductInfo = {
   freightPrice: number;
 }
 
-type CAFDecayableItem = {
-  decayRate: number; // uint8
-  decayPeriod: number;
-  lastDecayTime: number;
-}
-
 type ListedItem = {
   id: number;
   owner: string;
@@ -128,7 +119,7 @@ type ListedItem = {
 }
 
 export type {
-  PlayerRole,
+  CompanyType,
   ItemType,
   ProductItemType,
   EventItemType,
@@ -143,6 +134,5 @@ export type {
   ProductItem,
   ProductItemInfo,
   RawMaterialProductInfo,
-  CAFDecayableItem,
   ListedItem
 };
