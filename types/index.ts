@@ -105,6 +105,11 @@ interface ProductItemInfo {
   decayPeriod: number;
 }
 
+type ProductRecipe = {
+  output: ProductItemType;
+  inputs: ProductItemType[];
+};
+
 type RawMaterialProductInfo = {
   productType: ProductItemType;
   costPrice: number;
@@ -118,13 +123,17 @@ type ListedItem = {
   price: number;
 }
 
-export type {
+export {
   CompanyType,
   ItemType,
   ProductItemType,
   EventItemType,
   ContractRegistryType,
-  CompanyAcitivityEnergyFeeType,
+  CompanyAcitivityEnergyFeeType
+};
+
+export type {
+  ProductRecipe,
   Company,
   Item,
   EventItem,
@@ -135,4 +144,4 @@ export type {
   ProductItemInfo,
   RawMaterialProductInfo,
   ListedItem
-};
+}

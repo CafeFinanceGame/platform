@@ -8,16 +8,12 @@ import CAFMarketplaceAbi from '@/abis/CAFMarketplace.json'
 const contracts = constants.contracts;
 const config = wagmi.wagmiConfig;
 
-interface ICAFMarketplaceActions {
+export interface ICAFMarketplace {
     buy(itemId: number): Promise<void>;
     list(itemId: number, price: number): Promise<void>;
     unlist(itemId: number): Promise<void>;
     updatePrice(itemId: number, price: number): Promise<void>;
-    getListedItem(itemId: number): Promise<ListedItem>;
-
-    // Resale store actions
-    sell(itemId: number): Promise<void>;
-    calculateResalePrice(itemId: number): Promise<number>;
+    autoList(): Promise<void>;
 }
 
 export const useCAFMarketplace = (): ICAFMarketplaceActions => {
@@ -124,7 +120,19 @@ export const useCAFMarketplace = (): ICAFMarketplaceActions => {
                 console.error('Error getting listed item', error);
                 throw error;
             }
-        }
+        },
 
+        autoList: async (): Promise<void> => {
+            try {
+                await writeContract(config, {
+                    abi: CAFMarketplaceAbi,
+                    address: contracts.CAF_MARKETPLACE_ADDRESS,
+                    functionName: 'autoList',
+                    account: account.address
+                });
+            } catch (error) {
+                console.error('Error auto listing items', error);
+            }
+        }
     }
 }
