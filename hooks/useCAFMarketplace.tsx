@@ -4,23 +4,22 @@ import type { ListedItem, ProductItem } from '@/types';
 import constants from '@/utils/constants';
 import wagmi from "@/utils/wagmi";
 import CAFMarketplaceAbi from '@/abis/CAFMarketplace.json'
-import { useCompanyActions, useProductActions } from './useCAFItems';
-import { zeroAddress } from 'viem';
 
 const contracts = constants.contracts;
 const config = wagmi.wagmiConfig;
 
-export interface ICAFMarketplace {
+export interface ICAFMarketplaceActions {
     buy(itemId: number): Promise<void>;
     list(itemId: number, price: number): Promise<void>;
     unlist(itemId: number): Promise<void>;
     updatePrice(itemId: number, price: number): Promise<void>;
     autoList(): Promise<void>;
+    resell(itemId: number): Promise<void>;
+    calculateResalePrice(itemId: number): Promise<number>;
 }
 
 export const useCAFMarketplace = (): ICAFMarketplaceActions => {
     const account = useAccount();
-    const { get: getProduct } = useProductActions();
 
     return {
         buy: async (itemId: number): Promise<void> => {
@@ -79,17 +78,17 @@ export const useCAFMarketplace = (): ICAFMarketplaceActions => {
             }
         },
 
-        sell: async (itemId: number): Promise<void> => {
+        resell: async (itemId: number): Promise<void> => {
             try {
                 await writeContract(config, {
                     abi: CAFMarketplaceAbi,
                     address: contracts.CAF_MARKETPLACE_ADDRESS,
-                    functionName: 'sell',
+                    functionName: 'resell',
                     args: [itemId],
                     account: account.address
                 });
             } catch (error) {
-                console.error('Error selling item', error);
+                console.error('Error reselling item', error);
             }
         },
 
@@ -105,22 +104,6 @@ export const useCAFMarketplace = (): ICAFMarketplaceActions => {
                 return Number(price);
             } catch (error) {
                 console.error('Error calculating resale price', error);
-                throw error;
-            }
-        },
-
-        getListedItem: async (itemId: number): Promise<ListedItem> => {
-            try {
-                const item = await readContract(config, {
-                    abi: CAFMarketplaceAbi,
-                    address: contracts.CAF_MARKETPLACE_ADDRESS,
-                    functionName: 'listedItems',
-                    args: [itemId]
-                });
-
-                return item as ListedItem;
-            } catch (error) {
-                console.error('Error getting listed item', error);
                 throw error;
             }
         },
