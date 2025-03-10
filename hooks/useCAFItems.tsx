@@ -1,7 +1,7 @@
 import { useAccount } from 'wagmi'
 import type { Address } from 'viem';
 import { waitForTransactionReceipt, writeContract, readContract } from '@wagmi/core'
-import type { Company, EventItem, PlayerRole, ProductItem, ProductItemType } from '@/types';
+import type { Company, EventItem, CompanyType, ProductItem, ProductItemType } from '@/types';
 import constants from '@/utils/constants';
 import wagmi from "@/utils/wagmi";
 
@@ -12,11 +12,12 @@ const config = wagmi.wagmiConfig;
 import CAFItemsManagerAbi from '@/abis/CAFItemsManager.json'
 
 export interface ICAFCompanyItemsActions {
-    createCompanyItem(owner: string, role: PlayerRole): void;
+    createCompanyItem(owner: string, role: CompanyType): Promise<void>;
     getCompanyItem(companyId: number): Promise<Company>;
     getAllCompanyItemIds(): Promise<number[]>;
-    replenishEnergy(companyId: number, itemId: number): void;
-    useEnergy(companyId: number, amount: number): void;
+    replenishEnergy(companyId: number, itemId: number): Promise<void>;
+    useEnergy(companyId: number, amount: number): Promise<void>;
+    hasCompany(owner: Address): Promise<boolean>;
 }
 
 export interface ICAFProductItemsActions {
@@ -41,11 +42,11 @@ export interface ICAFItemsManagerActions extends ICAFCompanyItemsActions, ICAFPr
     popNotListedItem(): Promise<number>;
 }
 
-export const useCAFItems = (): ICAFItemsManagerActions => {
+export const useCAFItemsManagerActions = (): ICAFItemsManagerActions => {
     const account = useAccount();
 
     return {
-        createCompanyItem: async (owner: string, role: PlayerRole): Promise<void> => {
+        createCompanyItem: async (owner: string, role: CompanyType): Promise<void> => {
             try {
                 await writeContract(config, {
                     abi: CAFItemsManagerAbi,
@@ -66,7 +67,7 @@ export const useCAFItems = (): ICAFItemsManagerActions => {
                     abi: CAFItemsManagerAbi,
                     address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
                     functionName: 'getCompanyItem',
-                    args: [companyId]
+                    args: [companyId],
                 });
 
                 return company as Company;
@@ -88,6 +89,22 @@ export const useCAFItems = (): ICAFItemsManagerActions => {
                 return companyIds as number[];
             } catch (error) {
                 console.error('Error getting all company ids', error);
+                throw error;
+            }
+        },
+
+        hasCompany: async (owner: Address): Promise<boolean> => {
+            try {
+                const companyId = await readContract(config, {
+                    abi: CAFItemsManagerAbi,
+                    address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
+                    functionName: '_ownerOwnedCompany',
+                    args: [owner]
+                }) as number;
+
+                return companyId > 0;
+            } catch (error) {
+                console.error('Error checking company ownership', error);
                 throw error;
             }
         },

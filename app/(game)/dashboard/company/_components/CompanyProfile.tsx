@@ -2,33 +2,33 @@
 
 import { Image } from "@heroui/react"
 import { useCompanyStore } from "../../_hooks/useCompanyStore"
-import { PlayerRole } from "@/types"
+import { CompanyType } from "@/types"
 import { CiCoffeeBean } from "react-icons/ci";
 import { PiWashingMachine } from "react-icons/pi";
 import { GiSugarCane } from "react-icons/gi";
 import { useAccount } from "wagmi";
 import { useQuery } from "@tanstack/react-query";
-import { useCompanyActions } from "@/hooks/useCAFItems";
 import React from "react";
+import { useCAFItemsManagerActions } from "@/hooks/useCAFItems";
 interface Props extends React.HTMLAttributes<HTMLFormElement> {
 }
 export const CompanyProfile: React.FC<Props> = (props) => {
     const { address } = useAccount();
-    const { getByOwner, get } = useCompanyActions();
+    const { getCompanyItem, getNextItemId } = useCAFItemsManagerActions();
     const { company, setCompany } = useCompanyStore();
 
     const metadata = {
-        [PlayerRole.COFFEE_COMPANY]: {
+        [CompanyType.COFFEE_COMPANY]: {
             icon: <CiCoffeeBean />,
             label: 'Coffee Company',
             avatar_alt: 'https://i.pinimg.com/736x/53/2f/0c/532f0c643d553e0449275c0b80d481aa.jpg'
         },
-        [PlayerRole.MACHINE_COMPANY]: {
+        [CompanyType.MACHINE_COMPANY]: {
             icon: <PiWashingMachine />,
             label: 'Machine Company',
             avatar_alt: 'https://i.pinimg.com/736x/26/30/8e/26308ef78d21841abdb37b7bf55feead.jpg'
         },
-        [PlayerRole.MATERIAL_COMPANY]: {
+        [CompanyType.MATERIAL_COMPANY]: {
             icon: <GiSugarCane />,
             label: 'Material Company',
             avatar_alt: 'https://i.pinimg.com/736x/b4/7d/1f/b47d1f6ade41dc7d2ab0aad77afd2105.jpg'
@@ -39,11 +39,12 @@ export const CompanyProfile: React.FC<Props> = (props) => {
         queryKey: ['companyId', address],
         queryFn: async () => {
             if (!address) return null;
-            const id = await getByOwner(address);
+            // const id = await getByOwner(address);
+            const id = 2;
 
             setCompany({ ...company, id });
 
-            return id;
+            return 2;
         },
         enabled: !!address
     })
@@ -52,24 +53,26 @@ export const CompanyProfile: React.FC<Props> = (props) => {
         queryKey: ['company', companyId],
         queryFn: async () => {
             if (!companyId) return null;
-            return await get(companyId);
+            const test = await getNextItemId()
+
+            console.log('test', test);
         },
         enabled: !!companyId
     })
 
-    React.useEffect(() => {
-        if (companyData) {
-            setCompany({
-                id: company.id,
-                energy: companyData.energy,
-                owner: companyData.owner,
-                role: companyData.role
-            });
-        }
-    }, [companyData])
+    // React.useEffect(() => {
+    //     if (companyData) {
+    //         setCompany({
+    //             id: company.id,
+    //             energy: companyData.energy,
+    //             owner: companyData.owner,
+    //             role: companyData.role
+    //         });
+    //     }
+    // }, [companyData])
 
-    const RoleField = ({ role }: { role: PlayerRole }) => {
-        if (role === PlayerRole.NONE) return null;
+    const RoleField = ({ role }: { role: CompanyType }) => {
+        if (role === CompanyType.NONE) return null;
 
         return (
             <div className="flex flex-row gap-2 items-center">
@@ -79,7 +82,7 @@ export const CompanyProfile: React.FC<Props> = (props) => {
         )
     }
 
-    if (company.role === PlayerRole.NONE) return null;
+    if (company.role === CompanyType.NONE) return null;
 
     return (
         <div className="flex flex-row items-center justify-between rounded-3xl border-2 border-default-200 p-4 text-foreground">

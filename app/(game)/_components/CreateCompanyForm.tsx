@@ -1,23 +1,23 @@
 "use client";
 
 import React from "react";
-import { useCompanyActions } from "@/hooks/useCAFItems";
-import { PlayerRole } from "@/types";
+import { useCAFItemsManagerActions } from "@/hooks/useCAFItems";
+import { CompanyType } from "@/types";
 import { useAccount } from "wagmi";
 import { Select, SelectItem } from "@heroui/react";
 import { FaBuilding } from "react-icons/fa6";
 
 export const companies = [
     {
-        key: PlayerRole.COFFEE_COMPANY,
+        key: CompanyType.COFFEE_COMPANY,
         label: 'Coffee Company'
     },
     {
-        key: PlayerRole.MACHINE_COMPANY,
+        key: CompanyType.MACHINE_COMPANY,
         label: 'Machine Company'
     },
     {
-        key: PlayerRole.MATERIAL_COMPANY,
+        key: CompanyType.MATERIAL_COMPANY,
         label: 'Material Company'
     }
 ]
@@ -26,10 +26,10 @@ interface Props extends React.HTMLAttributes<HTMLFormElement> {
 }
 export const CreateCompanyForm: React.FC<Props> = (props) => {
     const { hasCompany } = props;
-    const { create } = useCompanyActions();
+    const { createCompanyItem } = useCAFItemsManagerActions();
     const { isConnected, address } = useAccount();
     const [owner, setOwner] = React.useState('');
-    const [role, setRole] = React.useState<PlayerRole>(0);
+    const [role, setRole] = React.useState<CompanyType>(0);
 
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -37,7 +37,7 @@ export const CreateCompanyForm: React.FC<Props> = (props) => {
         console.log('owner', owner);
         console.log('role', role);
         try {
-            await create(owner, role);
+            await createCompanyItem(owner, role);
         } catch (error) {
             console.error('Error creating company', error);
         }

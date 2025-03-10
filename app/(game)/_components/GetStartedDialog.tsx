@@ -7,14 +7,14 @@ import { useAppKit } from "@reown/appkit/react";
 import { useAccount } from "wagmi";
 import clsx from "clsx";
 import { CreateCompanyForm } from "./CreateCompanyForm";
-import { useCompanyActions } from "@/hooks/useCAFItems";
+import { useCAFItemsManagerActions } from "@/hooks/useCAFItems";
 import React from "react";
 import { useRouter } from "next/navigation";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
 }
 export const GetStartedDialog: React.FC<Props> = () => {
-    const { hasCompany } = useCompanyActions();
+    const { hasCompany } = useCAFItemsManagerActions();
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [ownerHasCompany, setOwnerHasCompany] = React.useState(false);
     const { open } = useAppKit();
