@@ -16,6 +16,8 @@ export interface ICAFMarketplaceActions {
     autoList(): Promise<void>;
     resell(itemId: number): Promise<void>;
     calculateResalePrice(itemId: number): Promise<number>;
+    getListedItem(itemId: number): Promise<ListedItem>;
+    getAllListedItems(): Promise<ListedItem[]>;
 }
 
 export const useCAFMarketplace = (): ICAFMarketplaceActions => {
@@ -106,6 +108,55 @@ export const useCAFMarketplace = (): ICAFMarketplaceActions => {
                 console.error('Error calculating resale price', error);
                 throw error;
             }
+        },
+
+        getListedItem: async (itemId: number): Promise<ListedItem> => {
+            try {
+                const item = await readContract(config, {
+                    abi: CAFMarketplaceAbi,
+                    address: contracts.CAF_MARKETPLACE_ADDRESS,
+                    functionName: '_listedItems',
+                    args: [itemId]
+                }) as ListedItem;
+
+                return {
+                    id: Number(item.id),
+                    owner: item.owner,
+                    price: Number(item.price)
+                } as ListedItem;
+            } catch (error) {
+                console.error('Error getting listed item', error);
+                throw error;
+            }
+        },
+
+        getAllListedItems: async (): Promise<ListedItem[]> => {
+            // get from     mapping(uint256 => ListedItem) public _listedItems;
+            const items = [] as ListedItem[];
+            let i = 0;
+
+            while (true) {
+                const item = await readContract(config, {
+                    abi: CAFMarketplaceAbi,
+                    address: contracts.CAF_MARKETPLACE_ADDRESS,
+                    functionName: '_listedItems',
+                    args: [i]
+                }) as ListedItem;
+
+                if (item.id === 0) {
+                    break;
+                }
+
+                items.push({
+                    id: Number(item.id),
+                    owner: item.owner,
+                    price: Number(item.price)
+                });
+
+                i++;
+            }
+
+            return items;
         },
 
         autoList: async (): Promise<void> => {
