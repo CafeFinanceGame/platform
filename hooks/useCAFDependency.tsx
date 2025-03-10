@@ -21,14 +21,11 @@ interface ICAFGameEconomyActions {
 
 interface ICAFGameEconomyParameters {
     COFFEE_BEAN: ProductEconomy;
-    BLACK_COFFEE: ProductEconomy;
-    MILK_COFFEE: ProductEconomy;
-    POWERED_MILK: ProductEconomy;
-    MILK: ProductEconomy;
+    COFFEE: ProductEconomy;
     WATER: ProductEconomy;
+    MILK: ProductEconomy;
     MATERIAL_MACHINE: ProductEconomy;
     KETTLE: ProductEconomy;
-    MILK_FOTHER: ProductEconomy;
 };
 
 interface ICAFGameEconomyHook extends ICAFGameEconomyActions, ICAFGameEconomyParameters { }
@@ -90,87 +87,38 @@ export const useCAFGameEconomy = (): ICAFGameEconomyHook => {
         COFFEE_BEAN: {
             energy: 50,
             durability: 0,
-            decayRate: 1,
-            decayPeriod: 3,
+            decayRatePerHour: 2,
             costPrice: 5,
-            insurancePrice: 1,
-            freightPrice: 1,
-            manufacturedPerHour: 10
         },
-        BLACK_COFFEE: {
+        COFFEE: {
             energy: 100,
             durability: 0,
-            decayRate: 1,
-            decayPeriod: 2,
+            decayRatePerHour: 3,
             costPrice: 10,
-            insurancePrice: 1,
-            freightPrice: 1
-        },
-        MILK_COFFEE: {
-            energy: 250,
-            durability: 0,
-            decayRate: 6,
-            decayPeriod: 1,
-            costPrice: 20,
-            insurancePrice: 3,
-            freightPrice: 4
-        },
-        POWERED_MILK: {
-            energy: 180,
-            durability: 0,
-            decayRate: 4,
-            decayPeriod: 1,
-            costPrice: 9,
-            insurancePrice: 1,
-            freightPrice: 2,
-            manufacturedPerHour: 20
-        },
-        MILK: {
-            energy: 120,
-            durability: 0,
-            decayRate: 3,
-            decayPeriod: 1,
-            costPrice: 8,
-            insurancePrice: 1,
-            freightPrice: 2
         },
         WATER: {
-            energy: 30,
+            energy: 800,
             durability: 0,
-            decayRate: 1,
-            decayPeriod: 6,
-            costPrice: 3,
-            insurancePrice: 1,
-            freightPrice: 1,
-            manufacturedPerHour: 30
+            decayRatePerHour: 2,
+            costPrice: 3
+        },
+        MILK: {
+            energy: 100,
+            durability: 0,
+            decayRatePerHour: 4,
+            costPrice: 8
         },
         MATERIAL_MACHINE: {
             energy: 0,
-            durability: 500,
-            decayRate: 3,
-            decayPeriod: 1,
-            costPrice: 50,
-            insurancePrice: 5,
-            freightPrice: 8,
-            manufacturedPerHour: 5
+            durability: 100,
+            decayRatePerHour: 1,
+            costPrice: 50
         },
         KETTLE: {
             energy: 0,
-            durability: 400,
-            decayRate: 2,
-            decayPeriod: 1,
-            costPrice: 40,
-            insurancePrice: 4,
-            freightPrice: 6
-        },
-        MILK_FOTHER: {
-            energy: 0,
-            durability: 600,
-            decayRate: 4,
-            decayPeriod: 1,
-            costPrice: 60,
-            insurancePrice: 6,
-            freightPrice: 10,
+            durability: 80,
+            decayRatePerHour: 1,
+            costPrice: 40
         }
     }
 }
