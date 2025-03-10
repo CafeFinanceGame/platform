@@ -1,73 +1,71 @@
 import { useAccount } from 'wagmi'
+import type { Address } from 'viem';
 import { waitForTransactionReceipt, writeContract, readContract } from '@wagmi/core'
-import type { Company, PlayerRole, ProductItem, ProductItemType } from '@/types';
+import type { Company, EventItem, PlayerRole, ProductItem, ProductItemType } from '@/types';
 import constants from '@/utils/constants';
 import wagmi from "@/utils/wagmi";
 
 const contracts = constants.contracts;
 const config = wagmi.wagmiConfig;
 
-import CAFCompanyItemsAbi from '@/abis/CAFCompanyItems.json'
+// import CAFCompanyItemsAbi from '@/abis/CAFCompanyItems.json'
+import CAFItemsManagerAbi from '@/abis/CAFItemsManager.json'
 
-export interface ICAFCompanyActions {
-    create(owner: string, role: PlayerRole): Promise<number>;
-    get(companyId: number): Promise<Company>;
-    getByOwner(owner: string): Promise<number>;
-    replenishEnergy(companyId: number, itemId: number): Promise<void>;
-    useEnergy(companyId: number, amount: number): Promise<void>;
-    role(companyId: number): Promise<PlayerRole>;
-    energy(companyId: number): Promise<number>;
-    isCompany(id: number): Promise<boolean>;
-    hasCompany(owner: string): Promise<boolean>;
+export interface ICAFCompanyItemsActions {
+    createCompanyItem(owner: string, role: PlayerRole): void;
+    getCompanyItem(companyId: number): Promise<Company>;
+    getAllCompanyItemIds(): Promise<number[]>;
+    replenishEnergy(companyId: number, itemId: number): void;
+    useEnergy(companyId: number, amount: number): void;
 }
 
-interface ICAFProductActions {
-    create(companyId: number, type: ProductItemType): Promise<number>;
-    createBatch(type: ProductItemType, amount: number): Promise<number[]>;
-    get(id: number): Promise<ProductItem>;
-    updateProductItem(
-        itemId: number,
-        price: number,
-        energy: number,
-        durability: number
-    ): Promise<void>
+export interface ICAFProductItemsActions {
+    createProductItem(companyId: number, productType: ProductItemType): void;
+    getProductItem(itemId: number): Promise<ProductItem>;
+    getAllProductItemIds(): Promise<number[]>;
+    manufacture(productType: ProductItemType, componentIds: number[]): Promise<number>;
+    decay(itemId: number): Promise<number>;
 }
 
+export interface ICAFEventItemsActions {
+    createEventItem(eventType: number, startDate: number, endDate: number): void;
+    getEventItem(eventId: number): Promise<EventItem>;
+    getAllEventItemIds(): Promise<number[]>;
+    getAllActiveEventItemIds(): Promise<number[]>;
+    startEvent(eventId: number): void;
+    endEvent(eventId: number): void;
+}
 
-export const useCompanyActions = (): ICAFCompanyActions => {
+export interface ICAFItemsManagerActions extends ICAFCompanyItemsActions, ICAFProductItemsActions, ICAFEventItemsActions {
+    getNextItemId(): Promise<number>;
+    popNotListedItem(): Promise<number>;
+}
+
+export const useCAFItems = (): ICAFItemsManagerActions => {
     const account = useAccount();
 
     return {
-        create: async (owner: string, role: PlayerRole): Promise<number> => {
+        createCompanyItem: async (owner: string, role: PlayerRole): Promise<void> => {
             try {
-                const hash = await writeContract(config, {
-                    abi: CAFCompanyItemsAbi,
-                    address: contracts.CAF_COMPANY_ITEMS_ADDRESS,
-                    functionName: 'create',
+                await writeContract(config, {
+                    abi: CAFItemsManagerAbi,
+                    address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
+                    functionName: 'createCompanyItem',
                     args: [owner, role],
                     account: account.address
                 });
-
-                const receitp = await waitForTransactionReceipt(config, {
-                    hash
-                });
-
-                const id: number = Number(receitp.logs[0].data);
-
-                return id;
-
             } catch (error) {
                 console.error('Error creating company', error);
                 throw error;
             }
         },
 
-        get: async (companyId: number): Promise<Company> => {
+        getCompanyItem: async (companyId: number): Promise<Company> => {
             try {
                 const company = await readContract(config, {
-                    abi: CAFCompanyItemsAbi,
-                    address: contracts.CAF_COMPANY_ITEMS_ADDRESS,
-                    functionName: 'get',
+                    abi: CAFItemsManagerAbi,
+                    address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
+                    functionName: 'getCompanyItem',
                     args: [companyId]
                 });
 
@@ -78,18 +76,18 @@ export const useCompanyActions = (): ICAFCompanyActions => {
             }
         },
 
-        getByOwner: async (owner: string): Promise<number> => {
+        getAllCompanyItemIds: async (): Promise<number[]> => {
             try {
-                const companyId = await readContract(config, {
-                    abi: CAFCompanyItemsAbi,
-                    address: contracts.CAF_COMPANY_ITEMS_ADDRESS,
-                    functionName: 'getByOwner',
-                    args: [owner]
+                const companyIds = await readContract(config, {
+                    abi: CAFItemsManagerAbi,
+                    address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
+                    functionName: 'getAllCompanyItemIds',
+                    args: []
                 });
 
-                return Number(companyId);
+                return companyIds as number[];
             } catch (error) {
-                console.error('Error getting company by owner', error);
+                console.error('Error getting all company ids', error);
                 throw error;
             }
         },
@@ -97,8 +95,8 @@ export const useCompanyActions = (): ICAFCompanyActions => {
         replenishEnergy: async (companyId: number, itemId: number): Promise<void> => {
             try {
                 await writeContract(config, {
-                    abi: CAFCompanyItemsAbi,
-                    address: contracts.CAF_COMPANY_ITEMS_ADDRESS,
+                    abi: CAFItemsManagerAbi,
+                    address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
                     functionName: 'replenishEnergy',
                     args: [companyId, itemId],
                     account: account.address
@@ -112,8 +110,8 @@ export const useCompanyActions = (): ICAFCompanyActions => {
         useEnergy: async (companyId: number, amount: number): Promise<void> => {
             try {
                 await writeContract(config, {
-                    abi: CAFCompanyItemsAbi,
-                    address: contracts.CAF_COMPANY_ITEMS_ADDRESS,
+                    abi: CAFItemsManagerAbi,
+                    address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
                     functionName: 'useEnergy',
                     args: [companyId, amount],
                     account: account.address
@@ -124,153 +122,212 @@ export const useCompanyActions = (): ICAFCompanyActions => {
             }
         },
 
-        role: async (companyId: number): Promise<PlayerRole> => {
+        createProductItem:
+            async (companyId: number, productType: ProductItemType): Promise<void> => {
+                try {
+                    await writeContract(config, {
+                        abi: CAFItemsManagerAbi,
+                        address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
+                        functionName: 'createProductItem',
+                        args: [companyId, productType],
+                        account: account.address
+                    });
+                } catch (error) {
+                    console.error('Error creating product item', error);
+                    throw error;
+                }
+            },
+
+        getProductItem: async (itemId: number): Promise<ProductItem> => {
             try {
-                const role = await readContract(config, {
-                    abi: CAFCompanyItemsAbi,
-                    address: contracts.CAF_COMPANY_ITEMS_ADDRESS,
-                    functionName: 'role',
-                    args: [companyId]
+                const productItem = await readContract(config, {
+                    abi: CAFItemsManagerAbi,
+                    address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
+                    functionName: 'getProductItem',
+                    args: [itemId]
                 });
 
-                return role as PlayerRole;
+                return productItem as ProductItem;
             } catch (error) {
-                console.error('Error getting role', error);
+                console.error('Error getting product item', error);
                 throw error;
             }
         },
 
-        energy: async (companyId: number): Promise<number> => {
+        getAllProductItemIds: async (): Promise<number[]> => {
             try {
-                const energy = await readContract(config, {
-                    abi: CAFCompanyItemsAbi,
-                    address: contracts.CAF_COMPANY_ITEMS_ADDRESS,
-                    functionName: 'energy',
-                    args: [companyId]
+                const productItemIds = await readContract(config, {
+                    abi: CAFItemsManagerAbi,
+                    address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
+                    functionName: 'getAllProductItemIds',
+                    args: []
                 });
 
-                return Number(energy);
+                return productItemIds as number[];
             } catch (error) {
-                console.error('Error getting energy', error);
+                console.error('Error getting all product item ids', error);
                 throw error;
             }
         },
 
-        isCompany: async (id: number): Promise<boolean> => {
+        manufacture: async (productType: ProductItemType, componentIds: number[]): Promise<number> => {
             try {
-                const isCompany = await readContract(config, {
-                    abi: CAFCompanyItemsAbi,
-                    address: contracts.CAF_COMPANY_ITEMS_ADDRESS,
-                    functionName: 'isCompany',
-                    args: [id]
+                const itemId = await writeContract(config, {
+                    abi: CAFItemsManagerAbi,
+                    address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
+                    functionName: 'manufacture',
+                    args: [productType, componentIds],
+                    account: account.address
                 });
 
-                return isCompany as boolean;
+                return Number(itemId);
             } catch (error) {
-                console.error('Error checking if company', error);
+                console.error('Error manufacturing product', error);
                 throw error;
             }
         },
 
-        hasCompany: async (owner: string): Promise<boolean> => {
+        decay: async (itemId: number): Promise<number> => {
             try {
-                const hasCompany = await readContract(config, {
-                    abi: CAFCompanyItemsAbi,
-                    address: contracts.CAF_COMPANY_ITEMS_ADDRESS,
-                    functionName: 'hasCompany',
-                    args: [owner]
+                const decayedItemId = await writeContract(config, {
+                    abi: CAFItemsManagerAbi,
+                    address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
+                    functionName: 'decay',
+                    args: [itemId],
+                    account: account.address
                 });
 
-                return hasCompany as boolean;
+                return Number(decayedItemId);
             } catch (error) {
-                console.error('Error checking if owner has company', error);
+                console.error('Error decaying product', error);
+                throw error;
+            }
+        },
+
+        createEventItem: async (eventType: number, startDate: number, endDate: number): Promise<void> => {
+            try {
+                await writeContract(config, {
+                    abi: CAFItemsManagerAbi,
+                    address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
+                    functionName: 'createEventItem',
+                    args: [eventType, startDate, endDate],
+                    account: account.address
+                });
+            } catch (error) {
+                console.error('Error creating event item', error);
+                throw error;
+            }
+        },
+
+        getEventItem: async (eventId: number): Promise<EventItem> => {
+            try {
+                const eventItem = await readContract(config, {
+                    abi: CAFItemsManagerAbi,
+                    address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
+                    functionName: 'getEventItem',
+                    args: [eventId]
+                });
+
+                return eventItem as EventItem;
+            } catch (error) {
+                console.error('Error getting event item', error);
+                throw error;
+            }
+        },
+
+        getAllEventItemIds: async (): Promise<number[]> => {
+            try {
+                const eventItemIds = await readContract(config, {
+                    abi: CAFItemsManagerAbi,
+                    address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
+                    functionName: 'getAllEventItemIds',
+                    args: []
+                });
+
+                return eventItemIds as number[];
+            } catch (error) {
+                console.error('Error getting all event item ids', error);
+                throw error;
+            }
+        },
+
+        getAllActiveEventItemIds: async (): Promise<number[]> => {
+            try {
+                const eventItemIds = await readContract(config, {
+                    abi: CAFItemsManagerAbi,
+                    address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
+                    functionName: 'getAllActiveEventItemIds',
+                    args: []
+                });
+
+                return eventItemIds as number[];
+            } catch (error) {
+                console.error('Error getting all active event item ids', error);
+                throw error;
+            }
+        },
+
+        startEvent: async (eventId: number): Promise<void> => {
+            try {
+                await writeContract(config, {
+                    abi: CAFItemsManagerAbi,
+                    address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
+                    functionName: 'startEvent',
+                    args: [eventId],
+                    account: account.address
+                });
+            } catch (error) {
+                console.error('Error starting event', error);
+                throw error;
+            }
+        },
+
+        endEvent: async (eventId: number): Promise<void> => {
+            try {
+                await writeContract(config, {
+                    abi: CAFItemsManagerAbi,
+                    address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
+                    functionName: 'endEvent',
+                    args: [eventId],
+                    account: account.address
+                });
+            } catch (error) {
+                console.error('Error ending event', error);
+                throw error;
+            }
+        },
+
+        getNextItemId: async (): Promise<number> => {
+            try {
+                const nextItemId = await readContract(config, {
+                    abi: CAFItemsManagerAbi,
+                    address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
+                    functionName: 'getNextItemId',
+                    args: []
+                });
+
+                return Number(nextItemId);
+            } catch (error) {
+                console.error('Error getting next item id', error);
+                throw error;
+            }
+        },
+
+        popNotListedItem: async (): Promise<number> => {
+            try {
+                const itemId = await writeContract(config, {
+                    abi: CAFItemsManagerAbi,
+                    address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
+                    functionName: 'popNotListedItem',
+                    args: [],
+                    account: account.address
+                });
+
+                return Number(itemId);
+            } catch (error) {
+                console.error('Error popping not listed item', error);
                 throw error;
             }
         }
-    }
-}
-
-export const useProductActions = (): ICAFProductActions => {
-    const account = useAccount();
-
-    return {
-        create: async (companyId: number, type: ProductItemType): Promise<number> => {
-            try {
-                const hash = await writeContract(config, {
-                    abi: CAFCompanyItemsAbi,
-                    address: contracts.CAF_COMPANY_ITEMS_ADDRESS,
-                    functionName: 'createProduct',
-                    args: [companyId, type],
-                    account: account.address
-                });
-
-                const receitp = await waitForTransactionReceipt(config, {
-                    hash
-                });
-
-                const id: number = Number(receitp.logs[0].data);
-
-                return id;
-            } catch (error) {
-                console.error('Error creating product', error);
-                throw error;
-            }
-        },
-
-        createBatch: async (type: ProductItemType, amount: number): Promise<number[]> => {
-            try {
-                const hash = await writeContract(config, {
-                    abi: CAFCompanyItemsAbi,
-                    address: contracts.CAF_COMPANY_ITEMS_ADDRESS,
-                    functionName: 'createProductBatch',
-                    args: [type, amount],
-                    account: account.address
-                });
-
-                const receitp = await waitForTransactionReceipt(config, {
-                    hash
-                });
-
-                const ids: number[] = receitp.logs.map(log => Number(log.data));
-
-                return ids;
-            } catch (error) {
-                console.error('Error creating product batch', error);
-                throw error;
-            }
-        },
-
-        get: async (id: number): Promise<ProductItem> => {
-            try {
-                const product = await readContract(config, {
-                    abi: CAFCompanyItemsAbi,
-                    address: contracts.CAF_PRODUCT_ITEMS_ADDRESS,
-                    functionName: 'get',
-                    args: [id]
-                });
-
-                return product as ProductItem;
-            } catch (error) {
-                console.error('Error getting product', error);
-                throw error;
-            }
-        },
-
-        updateProductItem: async (
-            itemId: number,
-            price: number,
-            energy: number,
-            durability: number
-        ): Promise<void> => {
-            await writeContract(config, {
-                abi: CAFCompanyItemsAbi,
-                address: contracts.CAF_COMPANY_ITEMS_ADDRESS,
-                functionName: 'updateProductItem',
-                args: [itemId, price, energy, durability],
-                account: account.address
-            });
-
-            return;
-        },
     }
 }

@@ -168,6 +168,25 @@
             },
             {
                 "indexed": false,
+                "name": "owner",
+                "internalType": "address",
+                "type": "address"
+            }
+        ],
+        "name": "CompanyItemCreated",
+        "anonymous": false,
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "indexed": false,
+                "name": "companyId",
+                "internalType": "uint256",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
                 "name": "amount",
                 "internalType": "uint256",
                 "type": "uint256"
@@ -212,6 +231,127 @@
             }
         ],
         "name": "EnergyUsed",
+        "anonymous": false,
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "indexed": true,
+                "name": "eventId",
+                "internalType": "uint256",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "name": "eventType",
+                "internalType": "enum ItemLibrary.EventItemType",
+                "type": "uint8"
+            }
+        ],
+        "name": "EventItemCreated",
+        "anonymous": false,
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "indexed": true,
+                "name": "eventId",
+                "internalType": "uint256",
+                "type": "uint256"
+            }
+        ],
+        "name": "EventItemEnded",
+        "anonymous": false,
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "indexed": true,
+                "name": "eventId",
+                "internalType": "uint256",
+                "type": "uint256"
+            }
+        ],
+        "name": "EventItemStarted",
+        "anonymous": false,
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "indexed": true,
+                "name": "id",
+                "internalType": "uint256",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "name": "lastDecayed",
+                "internalType": "uint256",
+                "type": "uint256"
+            }
+        ],
+        "name": "ItemDecayed",
+        "anonymous": false,
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "indexed": true,
+                "name": "itemId",
+                "internalType": "uint256",
+                "type": "uint256"
+            },
+            {
+                "indexed": true,
+                "name": "companyId",
+                "internalType": "uint256",
+                "type": "uint256"
+            }
+        ],
+        "name": "ProductItemCreated",
+        "anonymous": false,
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "indexed": true,
+                "name": "itemId",
+                "internalType": "uint256",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "name": "productType",
+                "internalType": "enum ItemLibrary.ProductItemType",
+                "type": "uint8"
+            }
+        ],
+        "name": "ProductItemManufactured",
+        "anonymous": false,
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "indexed": false,
+                "name": "_productType",
+                "internalType": "enum ItemLibrary.ProductItemType",
+                "type": "uint8"
+            },
+            {
+                "indexed": false,
+                "name": "_rateProducedPerHour",
+                "internalType": "uint256",
+                "type": "uint256"
+            }
+        ],
+        "name": "ProductsProduced",
         "anonymous": false,
         "type": "event"
     },
@@ -413,19 +553,6 @@
         "outputs": [
             {
                 "name": "",
-                "internalType": "uint8",
-                "type": "uint8"
-            }
-        ],
-        "inputs": [],
-        "name": "INITIAL_ENERGY",
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "outputs": [
-            {
-                "name": "",
                 "internalType": "bytes32",
                 "type": "bytes32"
             }
@@ -484,13 +611,7 @@
         "type": "function"
     },
     {
-        "outputs": [
-            {
-                "name": "",
-                "internalType": "uint256",
-                "type": "uint256"
-            }
-        ],
+        "outputs": [],
         "inputs": [
             {
                 "name": "_owner",
@@ -498,12 +619,53 @@
                 "type": "address"
             },
             {
-                "name": "_type",
-                "internalType": "enum PlayerLibrary.PlayerRole",
+                "name": "_role",
+                "internalType": "enum ItemLibrary.CompanyType",
                 "type": "uint8"
             }
         ],
-        "name": "create",
+        "name": "createCompanyItem",
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "outputs": [],
+        "inputs": [
+            {
+                "name": "_eventType",
+                "internalType": "enum ItemLibrary.EventItemType",
+                "type": "uint8"
+            },
+            {
+                "name": "_startDate",
+                "internalType": "uint256",
+                "type": "uint256"
+            },
+            {
+                "name": "_endDate",
+                "internalType": "uint256",
+                "type": "uint256"
+            }
+        ],
+        "name": "createEventItem",
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "outputs": [],
+        "inputs": [
+            {
+                "name": "_companyId",
+                "internalType": "uint256",
+                "type": "uint256"
+            },
+            {
+                "name": "_productType",
+                "internalType": "enum ItemLibrary.ProductItemType",
+                "type": "uint8"
+            }
+        ],
+        "name": "createProductItem",
         "stateMutability": "nonpayable",
         "type": "function"
     },
@@ -511,18 +673,83 @@
         "outputs": [
             {
                 "name": "",
-                "internalType": "uint8",
-                "type": "uint8"
-            }
-        ],
-        "inputs": [
-            {
-                "name": "_companyId",
                 "internalType": "uint256",
                 "type": "uint256"
             }
         ],
-        "name": "energy",
+        "inputs": [
+            {
+                "name": "_itemId",
+                "internalType": "uint256",
+                "type": "uint256"
+            }
+        ],
+        "name": "decay",
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "outputs": [],
+        "inputs": [
+            {
+                "name": "_eventId",
+                "internalType": "uint256",
+                "type": "uint256"
+            }
+        ],
+        "name": "endEvent",
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "outputs": [
+            {
+                "name": "",
+                "internalType": "uint256[]",
+                "type": "uint256[]"
+            }
+        ],
+        "inputs": [],
+        "name": "getAllActiveEventItemIds",
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "outputs": [
+            {
+                "name": "",
+                "internalType": "uint256[]",
+                "type": "uint256[]"
+            }
+        ],
+        "inputs": [],
+        "name": "getAllCompanyItemIds",
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "outputs": [
+            {
+                "name": "",
+                "internalType": "uint256[]",
+                "type": "uint256[]"
+            }
+        ],
+        "inputs": [],
+        "name": "getAllEventItemIds",
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "outputs": [
+            {
+                "name": "",
+                "internalType": "uint256[]",
+                "type": "uint256[]"
+            }
+        ],
+        "inputs": [],
+        "name": "getAllProductItemIds",
         "stateMutability": "view",
         "type": "function"
     },
@@ -537,7 +764,7 @@
                     },
                     {
                         "name": "role",
-                        "internalType": "enum PlayerLibrary.PlayerRole",
+                        "internalType": "enum ItemLibrary.CompanyType",
                         "type": "uint8"
                     },
                     {
@@ -558,7 +785,43 @@
                 "type": "uint256"
             }
         ],
-        "name": "get",
+        "name": "getCompanyItem",
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "name": "eventType",
+                        "internalType": "enum ItemLibrary.EventItemType",
+                        "type": "uint8"
+                    },
+                    {
+                        "name": "startDate",
+                        "internalType": "uint256",
+                        "type": "uint256"
+                    },
+                    {
+                        "name": "endDate",
+                        "internalType": "uint256",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "",
+                "internalType": "struct ICAFEventItems.EventItem",
+                "type": "tuple"
+            }
+        ],
+        "inputs": [
+            {
+                "name": "_eventId",
+                "internalType": "uint256",
+                "type": "uint256"
+            }
+        ],
+        "name": "getEventItem",
         "stateMutability": "view",
         "type": "function"
     },
@@ -570,14 +833,69 @@
                 "type": "uint256"
             }
         ],
-        "inputs": [
+        "inputs": [],
+        "name": "getNextItemId",
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "outputs": [
             {
-                "name": "_owner",
-                "internalType": "address",
-                "type": "address"
+                "components": [
+                    {
+                        "name": "productType",
+                        "internalType": "enum ItemLibrary.ProductItemType",
+                        "type": "uint8"
+                    },
+                    {
+                        "name": "price",
+                        "internalType": "uint256",
+                        "type": "uint256"
+                    },
+                    {
+                        "name": "energy",
+                        "internalType": "uint8",
+                        "type": "uint8"
+                    },
+                    {
+                        "name": "durability",
+                        "internalType": "uint8",
+                        "type": "uint8"
+                    },
+                    {
+                        "name": "decayRatePerHour",
+                        "internalType": "uint256",
+                        "type": "uint256"
+                    },
+                    {
+                        "name": "msgTime",
+                        "internalType": "uint256",
+                        "type": "uint256"
+                    },
+                    {
+                        "name": "expTime",
+                        "internalType": "uint256",
+                        "type": "uint256"
+                    },
+                    {
+                        "name": "lastDecayedTime",
+                        "internalType": "uint256",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "",
+                "internalType": "struct ICAFProductItems.ProductItem",
+                "type": "tuple"
             }
         ],
-        "name": "getByOwner",
+        "inputs": [
+            {
+                "name": "_itemId",
+                "internalType": "uint256",
+                "type": "uint256"
+            }
+        ],
+        "name": "getProductItem",
         "stateMutability": "view",
         "type": "function"
     },
@@ -616,25 +934,6 @@
         ],
         "name": "grantRole",
         "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "outputs": [
-            {
-                "name": "",
-                "internalType": "bool",
-                "type": "bool"
-            }
-        ],
-        "inputs": [
-            {
-                "name": "_owner",
-                "internalType": "address",
-                "type": "address"
-            }
-        ],
-        "name": "hasCompany",
-        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -689,31 +988,132 @@
         "outputs": [
             {
                 "name": "",
-                "internalType": "bool",
-                "type": "bool"
-            }
-        ],
-        "inputs": [
-            {
-                "name": "_companyId",
                 "internalType": "uint256",
                 "type": "uint256"
             }
         ],
-        "name": "isCompany",
-        "stateMutability": "view",
+        "inputs": [
+            {
+                "name": "_productType",
+                "internalType": "enum ItemLibrary.ProductItemType",
+                "type": "uint8"
+            },
+            {
+                "name": "_componentIds",
+                "internalType": "uint256[]",
+                "type": "uint256[]"
+            }
+        ],
+        "name": "manufacture",
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "outputs": [
+            {
+                "name": "",
+                "internalType": "bytes4",
+                "type": "bytes4"
+            }
+        ],
+        "inputs": [
+            {
+                "name": "",
+                "internalType": "address",
+                "type": "address"
+            },
+            {
+                "name": "",
+                "internalType": "address",
+                "type": "address"
+            },
+            {
+                "name": "",
+                "internalType": "uint256[]",
+                "type": "uint256[]"
+            },
+            {
+                "name": "",
+                "internalType": "uint256[]",
+                "type": "uint256[]"
+            },
+            {
+                "name": "",
+                "internalType": "bytes",
+                "type": "bytes"
+            }
+        ],
+        "name": "onERC1155BatchReceived",
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "outputs": [
+            {
+                "name": "",
+                "internalType": "bytes4",
+                "type": "bytes4"
+            }
+        ],
+        "inputs": [
+            {
+                "name": "",
+                "internalType": "address",
+                "type": "address"
+            },
+            {
+                "name": "",
+                "internalType": "address",
+                "type": "address"
+            },
+            {
+                "name": "",
+                "internalType": "uint256",
+                "type": "uint256"
+            },
+            {
+                "name": "",
+                "internalType": "uint256",
+                "type": "uint256"
+            },
+            {
+                "name": "",
+                "internalType": "bytes",
+                "type": "bytes"
+            }
+        ],
+        "name": "onERC1155Received",
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "outputs": [
+            {
+                "name": "",
+                "internalType": "uint256",
+                "type": "uint256"
+            }
+        ],
+        "inputs": [],
+        "name": "popNotListedItem",
+        "stateMutability": "nonpayable",
         "type": "function"
     },
     {
         "outputs": [],
         "inputs": [
             {
-                "name": "_companyId",
+                "name": "_productType",
+                "internalType": "enum ItemLibrary.ProductItemType",
+                "type": "uint8"
+            },
+            {
+                "name": "_rateProducedPerHour",
                 "internalType": "uint256",
                 "type": "uint256"
             }
         ],
-        "name": "remove",
+        "name": "produceProducts",
         "stateMutability": "nonpayable",
         "type": "function"
     },
@@ -769,25 +1169,6 @@
         ],
         "name": "revokeRole",
         "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "outputs": [
-            {
-                "name": "",
-                "internalType": "enum PlayerLibrary.PlayerRole",
-                "type": "uint8"
-            }
-        ],
-        "inputs": [
-            {
-                "name": "_companyId",
-                "internalType": "uint256",
-                "type": "uint256"
-            }
-        ],
-        "name": "role",
-        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -882,6 +1263,19 @@
         "type": "function"
     },
     {
+        "outputs": [],
+        "inputs": [
+            {
+                "name": "_eventId",
+                "internalType": "uint256",
+                "type": "uint256"
+            }
+        ],
+        "name": "startEvent",
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
         "outputs": [
             {
                 "name": "",
@@ -897,7 +1291,7 @@
             }
         ],
         "name": "supportsInterface",
-        "stateMutability": "view",
+        "stateMutability": "pure",
         "type": "function"
     },
     {
@@ -910,13 +1304,13 @@
         ],
         "inputs": [
             {
-                "name": "",
+                "name": "_id",
                 "internalType": "uint256",
                 "type": "uint256"
             }
         ],
         "name": "uri",
-        "stateMutability": "view",
+        "stateMutability": "pure",
         "type": "function"
     },
     {

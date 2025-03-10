@@ -10,21 +10,12 @@ import { zeroAddress } from 'viem';
 const contracts = constants.contracts;
 const config = wagmi.wagmiConfig;
 
-interface ICAFMarketplaceActions {
+export interface ICAFMarketplace {
     buy(itemId: number): Promise<void>;
     list(itemId: number, price: number): Promise<void>;
     unlist(itemId: number): Promise<void>;
     updatePrice(itemId: number, price: number): Promise<void>;
-    getListedItem(itemId: number): Promise<ListedItem>;
-    getAllListedItems(): Promise<{
-        product: ProductItem;
-        listedItem: ListedItem;
-        metadata?: any;
-    }[]>;
-
-    // Resale store actions
-    sell(itemId: number): Promise<void>;
-    calculateResalePrice(itemId: number): Promise<number>;
+    autoList(): Promise<void>;
 }
 
 export const useCAFMarketplace = (): ICAFMarketplaceActions => {
@@ -134,47 +125,17 @@ export const useCAFMarketplace = (): ICAFMarketplaceActions => {
             }
         },
 
-        getAllListedItems: async (): Promise<{
-            product: ProductItem;
-            listedItem: ListedItem;
-            metadata?: any;
-        }[]> => {
+        autoList: async (): Promise<void> => {
             try {
-                const items = [] as {
-                    product: ProductItem;
-                    listedItem: ListedItem;
-                    metadata?: any;
-                }[];
-
-                for (let i = 1; i < 10; i++) {
-                    const listedItem = await readContract(config, {
-                        abi: CAFMarketplaceAbi,
-                        address: contracts.CAF_MARKETPLACE_ADDRESS,
-                        functionName: 'listedItems',
-                        args: [i]
-                    }) as ListedItem;
-
-                    if (listedItem.owner === zeroAddress) return items;
-
-                    const product = await getProduct(i);
-
-                    items.push({
-                        listedItem,
-                        product
-                    });
-                }
-
-                return items as {
-                    product: ProductItem;
-                    listedItem: ListedItem;
-                    metadata?: any;
-                }[];
-
+                await writeContract(config, {
+                    abi: CAFMarketplaceAbi,
+                    address: contracts.CAF_MARKETPLACE_ADDRESS,
+                    functionName: 'autoList',
+                    account: account.address
+                });
             } catch (error) {
-                console.error('Error getting all listed items', error);
-                throw error;
+                console.error('Error auto listing items', error);
             }
         }
-
     }
 }

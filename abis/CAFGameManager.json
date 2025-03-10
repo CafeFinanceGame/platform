@@ -136,142 +136,12 @@
         "outputs": [
             {
                 "name": "",
-                "internalType": "uint256",
-                "type": "uint256"
-            }
-        ],
-        "inputs": [],
-        "name": "INITIAL_INACTIVE_MATERIAL_PRODUCT_SUPPLY",
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "outputs": [
-            {
-                "name": "",
                 "internalType": "bytes32",
                 "type": "bytes32"
             }
         ],
         "inputs": [],
         "name": "SYSTEM_ROLE",
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "outputs": [
-            {
-                "components": [
-                    {
-                        "name": "activityType",
-                        "internalType": "enum ICAFGameEconomy.CompanyAcitivityEnergyFeeType",
-                        "type": "uint8"
-                    },
-                    {
-                        "name": "fee",
-                        "internalType": "uint8",
-                        "type": "uint8"
-                    }
-                ],
-                "name": "",
-                "internalType": "struct ICAFGameEconomy.ActivityEnergyFee",
-                "type": "tuple"
-            }
-        ],
-        "inputs": [
-            {
-                "name": "_activityType",
-                "internalType": "enum ICAFGameEconomy.CompanyAcitivityEnergyFeeType",
-                "type": "uint8"
-            }
-        ],
-        "name": "getActivityFee",
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "outputs": [
-            {
-                "name": "",
-                "internalType": "uint256",
-                "type": "uint256"
-            }
-        ],
-        "inputs": [
-            {
-                "name": "_productType",
-                "internalType": "enum ItemLibrary.ProductItemType",
-                "type": "uint8"
-            }
-        ],
-        "name": "getCurrentPrice",
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "outputs": [
-            {
-                "components": [
-                    {
-                        "name": "manufacturedPerHour",
-                        "internalType": "uint256",
-                        "type": "uint256"
-                    }
-                ],
-                "name": "",
-                "internalType": "struct ICAFGameEconomy.ManufacturedProduct",
-                "type": "tuple"
-            }
-        ],
-        "inputs": [
-            {
-                "name": "_productType",
-                "internalType": "enum ItemLibrary.ProductItemType",
-                "type": "uint8"
-            }
-        ],
-        "name": "getManufacturedProduct",
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "outputs": [
-            {
-                "components": [
-                    {
-                        "name": "energy",
-                        "internalType": "uint8",
-                        "type": "uint8"
-                    },
-                    {
-                        "name": "durability",
-                        "internalType": "uint8",
-                        "type": "uint8"
-                    },
-                    {
-                        "name": "decayRatePerHour",
-                        "internalType": "uint8",
-                        "type": "uint8"
-                    },
-                    {
-                        "name": "costPrice",
-                        "internalType": "uint256",
-                        "type": "uint256"
-                    }
-                ],
-                "name": "",
-                "internalType": "struct ICAFGameEconomy.ProductEconomy",
-                "type": "tuple"
-            }
-        ],
-        "inputs": [
-            {
-                "name": "_productType",
-                "internalType": "enum ItemLibrary.ProductItemType",
-                "type": "uint8"
-            }
-        ],
-        "name": "getProductEconomy",
         "stateMutability": "view",
         "type": "function"
     },
@@ -399,96 +269,20 @@
         "type": "function"
     },
     {
-        "outputs": [
-            {
-                "name": "",
-                "internalType": "bool",
-                "type": "bool"
-            }
-        ],
-        "inputs": [
-            {
-                "name": "_activityType",
-                "internalType": "enum ICAFGameEconomy.CompanyAcitivityEnergyFeeType",
-                "type": "uint8"
-            },
-            {
-                "name": "_fee",
-                "internalType": "uint256",
-                "type": "uint256"
-            }
-        ],
-        "name": "updateActivityFee",
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
         "outputs": [],
-        "inputs": [],
-        "name": "updateAllPrices",
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "outputs": [
-            {
-                "name": "",
-                "internalType": "bool",
-                "type": "bool"
-            }
-        ],
         "inputs": [
             {
-                "name": "_productType",
-                "internalType": "enum ItemLibrary.ProductItemType",
-                "type": "uint8"
+                "name": "_to",
+                "internalType": "address",
+                "type": "address"
             },
             {
-                "name": "_manufacturedPerHour",
+                "name": "_amount",
                 "internalType": "uint256",
                 "type": "uint256"
             }
         ],
-        "name": "updateManufacturedProduct",
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "outputs": [
-            {
-                "name": "",
-                "internalType": "bool",
-                "type": "bool"
-            }
-        ],
-        "inputs": [
-            {
-                "name": "_productType",
-                "internalType": "enum ItemLibrary.ProductItemType",
-                "type": "uint8"
-            },
-            {
-                "name": "_energy",
-                "internalType": "uint256",
-                "type": "uint256"
-            },
-            {
-                "name": "_durability",
-                "internalType": "uint256",
-                "type": "uint256"
-            },
-            {
-                "name": "_decayRatePerHour",
-                "internalType": "uint8",
-                "type": "uint8"
-            },
-            {
-                "name": "_costPrice",
-                "internalType": "uint256",
-                "type": "uint256"
-            }
-        ],
-        "name": "updateProductEconomy",
+        "name": "transferToken",
         "stateMutability": "nonpayable",
         "type": "function"
     }
