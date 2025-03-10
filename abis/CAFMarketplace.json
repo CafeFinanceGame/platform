@@ -276,6 +276,42 @@
         "type": "function"
     },
     {
+        "outputs": [
+            {
+                "name": "id",
+                "internalType": "uint256",
+                "type": "uint256"
+            },
+            {
+                "name": "owner",
+                "internalType": "address",
+                "type": "address"
+            },
+            {
+                "name": "price",
+                "internalType": "uint256",
+                "type": "uint256"
+            }
+        ],
+        "inputs": [
+            {
+                "name": "",
+                "internalType": "uint256",
+                "type": "uint256"
+            }
+        ],
+        "name": "_listedItems",
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "outputs": [],
+        "inputs": [],
+        "name": "autoList",
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
         "outputs": [],
         "inputs": [
             {
@@ -387,35 +423,6 @@
         "type": "function"
     },
     {
-        "outputs": [
-            {
-                "name": "id",
-                "internalType": "uint256",
-                "type": "uint256"
-            },
-            {
-                "name": "owner",
-                "internalType": "address",
-                "type": "address"
-            },
-            {
-                "name": "price",
-                "internalType": "uint256",
-                "type": "uint256"
-            }
-        ],
-        "inputs": [
-            {
-                "name": "",
-                "internalType": "uint256",
-                "type": "uint256"
-            }
-        ],
-        "name": "listedItems",
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
         "outputs": [],
         "inputs": [
             {
@@ -437,6 +444,19 @@
         "outputs": [],
         "inputs": [
             {
+                "name": "_itemId",
+                "internalType": "uint256",
+                "type": "uint256"
+            }
+        ],
+        "name": "resell",
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "outputs": [],
+        "inputs": [
+            {
                 "name": "role",
                 "internalType": "bytes32",
                 "type": "bytes32"
@@ -448,19 +468,6 @@
             }
         ],
         "name": "revokeRole",
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "outputs": [],
-        "inputs": [
-            {
-                "name": "_itemId",
-                "internalType": "uint256",
-                "type": "uint256"
-            }
-        ],
-        "name": "sell",
         "stateMutability": "nonpayable",
         "type": "function"
     },
