@@ -5,11 +5,13 @@ import type { Company, EventItem, CompanyType, ProductItem, ProductItemType } fr
 import constants from '@/utils/constants';
 import wagmi from "@/utils/wagmi";
 
+import {CAFItemsManager__factory} from "@/typechain"
+
 const contracts = constants.contracts;
 const config = wagmi.wagmiConfig;
 
 // import CAFCompanyItemsAbi from '@/abis/CAFCompanyItems.json'
-import CAFItemsManagerAbi from '@/abis/CAFItemsManager.json'
+import CAFItemsManagerAbi from '@/abis/CAFItemsManager'
 
 export interface ICAFCompanyItemsActions {
     createCompanyItem(owner: string, role: CompanyType): Promise<void>;
@@ -64,10 +66,10 @@ export const useCAFItemsManagerActions = (): ICAFItemsManagerActions => {
         getCompanyItem: async (companyId: number): Promise<Company> => {
             try {
                 const company = await readContract(config, {
-                    abi: CAFItemsManagerAbi,
+                    abi: CAFItemsManager__factory.abi,
                     address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
                     functionName: 'getCompanyItem',
-                    args: [companyId],
+                    args: [BigInt(companyId)],
                 });
 
                 return company as Company;
