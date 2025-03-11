@@ -4,9 +4,9 @@ import type { ThemeProviderProps } from "next-themes";
 
 import * as React from "react";
 import { HeroUIProvider } from "@heroui/system";
+import { ToastProvider } from "@heroui/toast";
 import { useRouter } from "next/navigation";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
-import { ToastContainer } from 'react-toastify';
 import { WagmiProvider, cookieToInitialState, type Config } from "wagmi";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createAppKit } from '@reown/appkit/react'
@@ -57,7 +57,7 @@ export function Providers({ children, themeProps, cookies }: ProvidersProps) {
         <HeroUIProvider navigate={router.push}>
           <NextThemesProvider forcedTheme="dark" {...themeProps}>
             {children}
-            <ToastContainer theme="dark" />
+            <ToastProvider />
           </NextThemesProvider>
         </HeroUIProvider>
       </QueryClientProvider>

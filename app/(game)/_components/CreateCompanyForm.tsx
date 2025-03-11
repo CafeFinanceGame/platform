@@ -8,7 +8,7 @@ import { Select, Selection, SelectItem } from "@heroui/react";
 import { FaBuilding } from "react-icons/fa6";
 import { CAFButton } from "@/components/ui/button";
 import { useMutation } from "@tanstack/react-query";
-import { toast } from "react-toastify";
+import { addToast } from "@heroui/react";
 import CAFItemsManagerAbis from "@/abis/CAFItemsManager";
 import { useCompanyStore } from "../dashboard/_hooks/useCompanyStore";
 import { useRouter } from "next/navigation";
@@ -56,11 +56,19 @@ export const CreateCompanyForm: React.FC<Props> = (props) => {
         mutationKey: ['createCompany', address],
         mutationFn: async () => {
             if (!role) {
-                toast.error('Please select a company');
+                addToast({
+                    color: "warning",
+                    title: "Warning",
+                    description: "Please select a company to create"
+                })
                 return;
             }
             if (!address) {
-                toast.error('Please connect your wallet');
+                addToast({
+                    color: "warning",
+                    title: "Warning",
+                    description: "Please connect your wallet to create a company"
+                })
                 return;
             }
 
@@ -69,10 +77,18 @@ export const CreateCompanyForm: React.FC<Props> = (props) => {
         },
         onError: (error) => {
             console.error('Error creating company', error);
-            toast.error('Error creating company');
+            addToast({
+                color: "danger",
+                title: "Error",
+                description: "Error creating company"
+            })
         },
         onSuccess: () => {
-            toast.success('Company created successfully');
+            addToast({
+                color: "success",
+                title: "Success",
+                description: "Company created successfully"
+            })
 
             setTimeout(() => {
                 router.push('/dashboard/company');

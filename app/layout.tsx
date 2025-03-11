@@ -1,4 +1,5 @@
 import "@/styles/globals.css";
+import "react-circular-progressbar/dist/styles.css";
 import { Metadata, Viewport } from "next";
 import clsx from "clsx";
 import { headers } from 'next/headers'

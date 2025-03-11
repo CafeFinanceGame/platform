@@ -24,6 +24,7 @@ export interface ICAFProductItemsActions {
     createProductItem(companyId: number, productType: ProductItemType): void;
     getProductItem(itemId: number): Promise<ProductItem>;
     getAllProductItemIds(): Promise<number[]>;
+    getProductItemIdsByOwner(owner: Address): Promise<number[]>;
     manufacture(productType: ProductItemType, componentIds: number[]): Promise<number>;
     decay(itemId: number): Promise<number>;
 }
@@ -208,6 +209,22 @@ export const useCAFItemsManagerActions = (): ICAFItemsManagerActions => {
                 return productItemIds.map(id => Number(id));
             } catch (error) {
                 console.error('Error getting all product item ids', error);
+                throw error;
+            }
+        },
+
+        getProductItemIdsByOwner: async (owner: Address): Promise<number[]> => {
+            try {
+                const productItemIds = await readContract(config, {
+                    abi: CAFItemsManagerAbi,
+                    address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
+                    functionName: 'getAllProductItemByOwner',
+                    args: [owner]
+                });
+
+                return productItemIds.map(id => Number(id));
+            } catch (error) {
+                console.error('Error getting product item ids by owner', error);
                 throw error;
             }
         },
