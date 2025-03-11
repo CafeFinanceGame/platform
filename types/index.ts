@@ -9,8 +9,7 @@ enum CompanyType {
   FACTORY_COMPANY, // Only system has role this
   COFFEE_COMPANY,
   MACHINE_COMPANY,
-  MATERIAL_COMPANY,
-  NONE
+  MATERIAL_COMPANY
 }
 
 enum ItemType {

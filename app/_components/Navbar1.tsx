@@ -9,13 +9,14 @@ import { useAccount } from "wagmi";
 import numeral from "numeral";
 import { PiLightningFill } from "react-icons/pi";
 import { useCAFItemsManagerActions } from "@/hooks/useCAFItems";
+import { CompanyType } from "@/types";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> { }
 export const Navbar1: React.FC<Props> = () => {
     const { open } = useAppKit();
     const { address } = useAccount();
     const { balanceOf } = useCAFToken();
-    const { getCompanyItem } = useCAFItemsManagerActions();
+    const { getCompanyItem, getCompanyItemIdByOwner } = useCAFItemsManagerActions();
 
     const { data: balance, isSuccess, isError, isLoading: isBalanceLoading } = useQuery({
         queryKey: ['balance', address],
@@ -33,7 +34,8 @@ export const Navbar1: React.FC<Props> = () => {
         queryKey: ['company', address],
         queryFn: async () => {
             if (address) {
-                const company = await getCompanyItem(1);
+                const companyId = await getCompanyItemIdByOwner(address);
+                const company = await getCompanyItem(companyId);
 
                 return company;
             }
@@ -45,12 +47,12 @@ export const Navbar1: React.FC<Props> = () => {
         if (!address) return null;
 
         return (
-            <ul>
+            <ul className="flex flex-row text-foreground">
                 <Button
                     as={"li"}
                     variant="light"
-                    className="text-foreground-900"
-                    endContent={<Image src="/assets/cafi-token.png" alt="CaFi Token" className="w-5 aspect-square" />}
+                    className="p-0 text-foreground h-fit"
+                    startContent={<Image src="/assets/cafi-token.png" alt="CaFi Token" className="w-5 aspect-square" />}
                     isLoading={isBalanceLoading}
                 >
                     {isSuccess ? numeral(balance).format('0.0a') : '0'}
@@ -58,8 +60,8 @@ export const Navbar1: React.FC<Props> = () => {
                 <Button
                     as={"li"}
                     variant="light"
-                    className="text-foreground-900"
-                    endContent={<PiLightningFill size={24} />}
+                    className="p-0 text-foreground h-fit"
+                    startContent={<PiLightningFill className="text-primary" size={20} />}
                     isLoading={isCompanyLoading}
                 >
                     {isCompanySuccess ? company?.energy : '0'}
@@ -70,7 +72,7 @@ export const Navbar1: React.FC<Props> = () => {
 
 
 
-    if (isCompanyError || isError) return null;
+    if (isCompanyError || isError || company?.role === CompanyType.UNKNOWN) return null;
 
     return (
         <>
@@ -78,8 +80,15 @@ export const Navbar1: React.FC<Props> = () => {
                 <></>
                 :
                 <User
+                    onClick={() => open()}
                     name="Company"
                     description={<Resources />}
+                    avatarProps={{
+                        color: "primary",
+                    }}
+                    classNames={{
+                        name: "font-semibold text-base pl-1",
+                    }}
                 />}
         </>
     );

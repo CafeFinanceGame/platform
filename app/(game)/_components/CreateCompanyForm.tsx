@@ -3,9 +3,15 @@
 import React from "react";
 import { useCAFItemsManagerActions } from "@/hooks/useCAFItems";
 import { CompanyType } from "@/types";
-import { useAccount } from "wagmi";
-import { Select, SelectItem } from "@heroui/react";
+import { useAccount, useWatchContractEvent } from "wagmi";
+import { Select, Selection, SelectItem } from "@heroui/react";
 import { FaBuilding } from "react-icons/fa6";
+import { CAFButton } from "@/components/ui/button";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import CAFItemsManagerAbis from "@/abis/CAFItemsManager";
+import { useCompanyStore } from "../dashboard/_hooks/useCompanyStore";
+import { useRouter } from "next/navigation";
 
 export const companies = [
     {
@@ -28,46 +34,90 @@ export const CreateCompanyForm: React.FC<Props> = (props) => {
     const { hasCompany } = props;
     const { createCompanyItem } = useCAFItemsManagerActions();
     const { isConnected, address } = useAccount();
-    const [owner, setOwner] = React.useState('');
-    const [role, setRole] = React.useState<CompanyType>(0);
+    const { company, setCompany } = useCompanyStore();
+    const [role, setRole] = React.useState<Selection>(new Set([]));
+    const router = useRouter();
 
-    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        console.log('owner', owner);
-        console.log('role', role);
-        try {
-            await createCompanyItem(owner, role);
-        } catch (error) {
-            console.error('Error creating company', error);
+    useWatchContractEvent({
+        abi: CAFItemsManagerAbis,
+        eventName: 'CompanyItemCreated',
+        onLogs: (logs) => {
+            const parsedRole = Array.from(role as Set<CompanyType>);
+
+            setCompany({
+                ...company,
+                id: Number(logs[0]?.args?.companyId),
+                role: parsedRole[0]
+            })
         }
-    }
+    })
+
+    const { mutate: createCompany, isPending: isCreating } = useMutation({
+        mutationKey: ['createCompany', address],
+        mutationFn: async () => {
+            if (!role) {
+                toast.error('Please select a company');
+                return;
+            }
+            if (!address) {
+                toast.error('Please connect your wallet');
+                return;
+            }
+
+            const parsedRole = Array.from(role as Set<CompanyType>);
+            await createCompanyItem(address, parsedRole[0]);
+        },
+        onError: (error) => {
+            console.error('Error creating company', error);
+            toast.error('Error creating company');
+        },
+        onSuccess: () => {
+            toast.success('Company created successfully');
+
+            setTimeout(() => {
+                router.push('/dashboard/company');
+            }, 2000);
+        }
+    })
 
     if (!isConnected) return null;
-    if(hasCompany) return null;
+    if (hasCompany) return null;
 
     return (
-        <Select
-            variant="bordered"
-            label="Select a company"
-            items={companies}
-            placeholder="Select a company to start playing"
-            description="Should consider selecting a company"
-            classNames={{
-                label: 'text-default-500',
-                innerWrapper: 'border-default-100',
-                popoverContent: 'bg-white',
-                listbox: 'text-black'
-            }}
-            startContent={<FaBuilding />}
-        >
-            {(company) =>
-                <SelectItem
-                    className="light"
-                    key={company.key}
-                >
-                    {company.label}
-                </SelectItem>}
-        </Select>
+        <div className="flex flex-col gap-4 w-full">
+            <Select
+                variant="bordered"
+                label="Select a company"
+                items={companies}
+                placeholder="Select a company to start playing"
+                description="Should consider selecting a company"
+                classNames={{
+                    label: 'text-default-500',
+                    innerWrapper: 'border-default-100',
+                    popoverContent: 'bg-white',
+                    listbox: 'text-black'
+                }}
+                startContent={<FaBuilding />}
+                onSelectionChange={setRole}
+            >
+                {(company) =>
+                    <SelectItem
+                        className="light"
+                        key={company.key}
+                    >
+                        {company.label}
+                    </SelectItem>
+                }
+            </Select>
+            <CAFButton
+                color="primary"
+                onPress={() => {
+                    createCompany();
+                }}
+                isLoading={isCreating}
+            >
+                Create Company
+            </CAFButton>
+        </div>
     );
 }

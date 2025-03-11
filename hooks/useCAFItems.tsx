@@ -13,6 +13,7 @@ import CAFItemsManagerAbi from '@/abis/CAFItemsManager'
 export interface ICAFCompanyItemsActions {
     createCompanyItem(owner: string, role: CompanyType): Promise<void>;
     getCompanyItem(companyId: number): Promise<Company>;
+    getCompanyItemIdByOwner(owner: Address): Promise<number>;
     getAllCompanyItemIds(): Promise<number[]>;
     replenishEnergy(companyId: number, itemId: number): Promise<void>;
     useEnergy(companyId: number, amount: number): Promise<void>;
@@ -72,6 +73,22 @@ export const useCAFItemsManagerActions = (): ICAFItemsManagerActions => {
                 return company as Company;
             } catch (error) {
                 console.error('Error getting company', error);
+                throw error;
+            }
+        },
+
+        getCompanyItemIdByOwner: async (owner: Address): Promise<number> => {
+            try {
+                const companyId = await readContract(config, {
+                    abi: CAFItemsManagerAbi,
+                    address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
+                    functionName: 'getCompanyItemByOwner',
+                    args: [owner]
+                });
+
+                return Number(companyId);
+            } catch (error) {
+                console.error('Error getting company id by owner', error);
                 throw error;
             }
         },

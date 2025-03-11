@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { Company, PlayerRole } from '@/types'
+import { Company, CompanyType } from '@/types'
 
 type CompanyState = {
     id: number;
@@ -17,7 +17,7 @@ export const useCompanyStore = create<ICompanyStore>((set) => ({
         id: 0,
         energy: 0,
         owner: '',
-        role: PlayerRole.NONE
+        role: CompanyType.UNKNOWN
     },
     setCompany: (company) => set({ company })
 }))
