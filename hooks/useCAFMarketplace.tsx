@@ -3,11 +3,11 @@ import { writeContract, readContract } from '@wagmi/core'
 import type { ListedItem, ProductItem } from '@/types';
 import constants from '@/utils/constants';
 import wagmi from "@/utils/wagmi";
-import CAFMarketplaceAbi from '@/abis/CAFMarketplace.json'
+
+import CAFMarketplaceAbi from '@/abis/CAFMarketplace'
 
 const contracts = constants.contracts;
 const config = wagmi.wagmiConfig;
-
 export interface ICAFMarketplaceActions {
     buy(itemId: number): Promise<void>;
     list(itemId: number, price: number): Promise<void>;
@@ -17,7 +17,7 @@ export interface ICAFMarketplaceActions {
     resell(itemId: number): Promise<void>;
     calculateResalePrice(itemId: number): Promise<number>;
     getListedItem(itemId: number): Promise<ListedItem>;
-    getAllListedItems(): Promise<ListedItem[]>;
+    getAllListedItemIds(): Promise<number []>;
 }
 
 export const useCAFMarketplace = (): ICAFMarketplaceActions => {
@@ -30,7 +30,7 @@ export const useCAFMarketplace = (): ICAFMarketplaceActions => {
                     abi: CAFMarketplaceAbi,
                     address: contracts.CAF_MARKETPLACE_ADDRESS,
                     functionName: 'buy',
-                    args: [itemId],
+                    args: [BigInt(itemId)],
                     account: account.address
                 });
             } catch (error) {
@@ -44,7 +44,7 @@ export const useCAFMarketplace = (): ICAFMarketplaceActions => {
                     abi: CAFMarketplaceAbi,
                     address: contracts.CAF_MARKETPLACE_ADDRESS,
                     functionName: 'list',
-                    args: [itemId, price],
+                    args: [BigInt(itemId), BigInt(price)],
                     account: account.address
                 });
             } catch (error) {
@@ -58,7 +58,7 @@ export const useCAFMarketplace = (): ICAFMarketplaceActions => {
                     abi: CAFMarketplaceAbi,
                     address: contracts.CAF_MARKETPLACE_ADDRESS,
                     functionName: 'unlist',
-                    args: [itemId],
+                    args: [BigInt(itemId)],
                     account: account.address
                 });
             } catch (error) {
@@ -72,7 +72,7 @@ export const useCAFMarketplace = (): ICAFMarketplaceActions => {
                     abi: CAFMarketplaceAbi,
                     address: contracts.CAF_MARKETPLACE_ADDRESS,
                     functionName: 'updatePrice',
-                    args: [itemId, price],
+                    args: [BigInt(itemId), BigInt(price)],
                     account: account.address
                 });
             } catch (error) {
@@ -86,7 +86,7 @@ export const useCAFMarketplace = (): ICAFMarketplaceActions => {
                     abi: CAFMarketplaceAbi,
                     address: contracts.CAF_MARKETPLACE_ADDRESS,
                     functionName: 'resell',
-                    args: [itemId],
+                    args: [BigInt(itemId)],
                     account: account.address
                 });
             } catch (error) {
@@ -100,7 +100,7 @@ export const useCAFMarketplace = (): ICAFMarketplaceActions => {
                     abi: CAFMarketplaceAbi,
                     address: contracts.CAF_MARKETPLACE_ADDRESS,
                     functionName: 'calculateResalePrice',
-                    args: [itemId]
+                    args: [BigInt(itemId)]
                 });
 
                 return Number(price);
@@ -115,9 +115,9 @@ export const useCAFMarketplace = (): ICAFMarketplaceActions => {
                 const item = await readContract(config, {
                     abi: CAFMarketplaceAbi,
                     address: contracts.CAF_MARKETPLACE_ADDRESS,
-                    functionName: '_listedItems',
-                    args: [itemId]
-                }) as ListedItem;
+                    functionName: 'getListedItem',
+                    args: [BigInt(itemId)]
+                });
 
                 return {
                     id: Number(item.id),
@@ -130,33 +130,19 @@ export const useCAFMarketplace = (): ICAFMarketplaceActions => {
             }
         },
 
-        getAllListedItems: async (): Promise<ListedItem[]> => {
-            // get from     mapping(uint256 => ListedItem) public _listedItems;
-            const items = [] as ListedItem[];
-            let i = 0;
-
-            while (true) {
-                const item = await readContract(config, {
+        getAllListedItemIds: async (): Promise<number []> => {
+            try {
+                const items = await readContract(config, {
                     abi: CAFMarketplaceAbi,
                     address: contracts.CAF_MARKETPLACE_ADDRESS,
-                    functionName: '_listedItems',
-                    args: [i]
-                }) as ListedItem;
-
-                if (item.id === 0) {
-                    break;
-                }
-
-                items.push({
-                    id: Number(item.id),
-                    owner: item.owner,
-                    price: Number(item.price)
+                    functionName: 'getAllListedItemIds'
                 });
 
-                i++;
+                return items.map(item => Number(item));
+            } catch (error) {
+                console.error('Error getting all listed items', error);
+                throw error;
             }
-
-            return items;
         },
 
         autoList: async (): Promise<void> => {

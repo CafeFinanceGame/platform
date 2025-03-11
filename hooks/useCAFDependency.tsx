@@ -2,7 +2,7 @@ import { readContract } from "@wagmi/core";
 import { ProductItemType, ProductEconomy, ActivityEnergyFee, ListedItem } from "@/types";
 import constants from '@/utils/constants';
 import wagmi from "@/utils/wagmi";
-import CAFGameEconomyAbi from '@/abis/CAFGameEconomy.json'
+import CAFGameEconomyAbi from '@/abis/CAFGameEconomy'
 import { useAccount } from "wagmi";
 
 const contracts = constants.contracts;
@@ -77,7 +77,10 @@ export const useCAFGameEconomy = (): ICAFGameEconomyHook => {
                     account: account.address
                 });
 
-                return economy as ProductEconomy;
+                return {
+                    ...economy,
+                    costPrice: Number(economy.costPrice)
+                } as ProductEconomy;
             } catch (error) {
                 console.error('Error getting product economy', error);
                 throw error;

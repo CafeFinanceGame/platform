@@ -1,6 +1,7 @@
 import { useAccount } from "wagmi";
+import type { Address } from "viem";
 import { writeContract, readContract } from "@wagmi/core";
-import CAFTokenAbi from "@/abis/CAFToken.json";
+import CAFTokenAbi from "@/abis/CAFToken";
 import constants from "@/utils/constants";
 import wagmi from "@/utils/wagmi";
 
@@ -23,7 +24,7 @@ export const useCAFToken = (): ICAFTokenActions => {
                     abi: CAFTokenAbi,
                     address: contracts.CAF_TOKEN_ADDRESS,
                     functionName: 'approve',
-                    args: [contracts.CAF_MARKETPLACE_ADDRESS, amount],
+                    args: [contracts.CAF_MARKETPLACE_ADDRESS, BigInt(amount)],
                     account: account.address
                 });
             } catch (error) {
@@ -41,7 +42,7 @@ export const useCAFToken = (): ICAFTokenActions => {
                     abi: CAFTokenAbi,
                     address: contracts.CAF_TOKEN_ADDRESS,
                     functionName: 'balanceOf',
-                    args: [owner]
+                    args: [owner as Address]
                 });
 
                 return Number(balance);
@@ -61,7 +62,7 @@ export const useCAFToken = (): ICAFTokenActions => {
                     abi: CAFTokenAbi,
                     address: contracts.CAF_TOKEN_ADDRESS,
                     functionName: 'transfer',
-                    args: [to, amount],
+                    args: [to as Address, BigInt(amount)],
                     account: account.address
                 });
             } catch (error) {

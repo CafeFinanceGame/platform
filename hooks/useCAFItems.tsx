@@ -5,12 +5,9 @@ import type { Company, EventItem, CompanyType, ProductItem, ProductItemType } fr
 import constants from '@/utils/constants';
 import wagmi from "@/utils/wagmi";
 
-import {CAFItemsManager__factory} from "@/typechain"
-
 const contracts = constants.contracts;
 const config = wagmi.wagmiConfig;
 
-// import CAFCompanyItemsAbi from '@/abis/CAFCompanyItems.json'
 import CAFItemsManagerAbi from '@/abis/CAFItemsManager'
 
 export interface ICAFCompanyItemsActions {
@@ -54,7 +51,7 @@ export const useCAFItemsManagerActions = (): ICAFItemsManagerActions => {
                     abi: CAFItemsManagerAbi,
                     address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
                     functionName: 'createCompanyItem',
-                    args: [owner, role],
+                    args: [owner as Address, role],
                     account: account.address
                 });
             } catch (error) {
@@ -66,7 +63,7 @@ export const useCAFItemsManagerActions = (): ICAFItemsManagerActions => {
         getCompanyItem: async (companyId: number): Promise<Company> => {
             try {
                 const company = await readContract(config, {
-                    abi: CAFItemsManager__factory.abi,
+                    abi: CAFItemsManagerAbi,
                     address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
                     functionName: 'getCompanyItem',
                     args: [BigInt(companyId)],
@@ -88,7 +85,7 @@ export const useCAFItemsManagerActions = (): ICAFItemsManagerActions => {
                     args: []
                 });
 
-                return companyIds as number[];
+                return companyIds.map(id => Number(id));
             } catch (error) {
                 console.error('Error getting all company ids', error);
                 throw error;
@@ -96,15 +93,17 @@ export const useCAFItemsManagerActions = (): ICAFItemsManagerActions => {
         },
 
         hasCompany: async (owner: Address): Promise<boolean> => {
+            if (!account.address) return false;
+
             try {
-                const companyId = await readContract(config, {
+                const hasCompany = await readContract(config, {
                     abi: CAFItemsManagerAbi,
                     address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
-                    functionName: '_ownerOwnedCompany',
-                    args: [owner]
-                }) as number;
+                    functionName: 'hasCompanyItem',
+                    args: [account.address]
+                }) as boolean;
 
-                return companyId > 0;
+                return hasCompany;
             } catch (error) {
                 console.error('Error checking company ownership', error);
                 throw error;
@@ -117,7 +116,7 @@ export const useCAFItemsManagerActions = (): ICAFItemsManagerActions => {
                     abi: CAFItemsManagerAbi,
                     address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
                     functionName: 'replenishEnergy',
-                    args: [companyId, itemId],
+                    args: [BigInt(companyId), BigInt(itemId)],
                     account: account.address
                 });
             } catch (error) {
@@ -132,7 +131,7 @@ export const useCAFItemsManagerActions = (): ICAFItemsManagerActions => {
                     abi: CAFItemsManagerAbi,
                     address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
                     functionName: 'useEnergy',
-                    args: [companyId, amount],
+                    args: [BigInt(companyId), amount],
                     account: account.address
                 });
             } catch (error) {
@@ -148,7 +147,7 @@ export const useCAFItemsManagerActions = (): ICAFItemsManagerActions => {
                         abi: CAFItemsManagerAbi,
                         address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
                         functionName: 'createProductItem',
-                        args: [companyId, productType],
+                        args: [BigInt(companyId), productType],
                         account: account.address
                     });
                 } catch (error) {
@@ -163,10 +162,17 @@ export const useCAFItemsManagerActions = (): ICAFItemsManagerActions => {
                     abi: CAFItemsManagerAbi,
                     address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
                     functionName: 'getProductItem',
-                    args: [itemId]
+                    args: [BigInt(itemId)]
                 });
 
-                return productItem as ProductItem;
+                return {
+                    ...productItem,
+                    price: Number(productItem.price),
+                    decayRatePerHour: Number(productItem.decayRatePerHour),
+                    msgTime: Number(productItem.msgTime),
+                    expTime: Number(productItem.expTime),
+                    lastDecayedTime: Number(productItem.lastDecayedTime)
+                } as ProductItem;
             } catch (error) {
                 console.error('Error getting product item', error);
                 throw error;
@@ -182,7 +188,7 @@ export const useCAFItemsManagerActions = (): ICAFItemsManagerActions => {
                     args: []
                 });
 
-                return productItemIds as number[];
+                return productItemIds.map(id => Number(id));
             } catch (error) {
                 console.error('Error getting all product item ids', error);
                 throw error;
@@ -195,7 +201,7 @@ export const useCAFItemsManagerActions = (): ICAFItemsManagerActions => {
                     abi: CAFItemsManagerAbi,
                     address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
                     functionName: 'manufacture',
-                    args: [productType, componentIds],
+                    args: [productType, componentIds.map(id => BigInt(id))],
                     account: account.address
                 });
 
@@ -212,7 +218,7 @@ export const useCAFItemsManagerActions = (): ICAFItemsManagerActions => {
                     abi: CAFItemsManagerAbi,
                     address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
                     functionName: 'decay',
-                    args: [itemId],
+                    args: [BigInt(itemId)],
                     account: account.address
                 });
 
@@ -229,7 +235,7 @@ export const useCAFItemsManagerActions = (): ICAFItemsManagerActions => {
                     abi: CAFItemsManagerAbi,
                     address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
                     functionName: 'createEventItem',
-                    args: [eventType, startDate, endDate],
+                    args: [eventType, BigInt(startDate), BigInt(endDate)],
                     account: account.address
                 });
             } catch (error) {
@@ -244,10 +250,14 @@ export const useCAFItemsManagerActions = (): ICAFItemsManagerActions => {
                     abi: CAFItemsManagerAbi,
                     address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
                     functionName: 'getEventItem',
-                    args: [eventId]
+                    args: [BigInt(eventId)]
                 });
 
-                return eventItem as EventItem;
+                return {
+                    ...eventItem,
+                    startDate: new Date(Number(eventItem.startDate)),
+                    endDate: new Date(Number(eventItem.endDate))
+                } as EventItem;
             } catch (error) {
                 console.error('Error getting event item', error);
                 throw error;
@@ -263,7 +273,7 @@ export const useCAFItemsManagerActions = (): ICAFItemsManagerActions => {
                     args: []
                 });
 
-                return eventItemIds as number[];
+                return eventItemIds.map(id => Number(id));
             } catch (error) {
                 console.error('Error getting all event item ids', error);
                 throw error;
@@ -279,7 +289,7 @@ export const useCAFItemsManagerActions = (): ICAFItemsManagerActions => {
                     args: []
                 });
 
-                return eventItemIds as number[];
+                return eventItemIds.map(id => Number(id));
             } catch (error) {
                 console.error('Error getting all active event item ids', error);
                 throw error;
@@ -292,7 +302,7 @@ export const useCAFItemsManagerActions = (): ICAFItemsManagerActions => {
                     abi: CAFItemsManagerAbi,
                     address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
                     functionName: 'startEvent',
-                    args: [eventId],
+                    args: [BigInt(eventId)],
                     account: account.address
                 });
             } catch (error) {
@@ -307,7 +317,7 @@ export const useCAFItemsManagerActions = (): ICAFItemsManagerActions => {
                     abi: CAFItemsManagerAbi,
                     address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
                     functionName: 'endEvent',
-                    args: [eventId],
+                    args: [BigInt(eventId)],
                     account: account.address
                 });
             } catch (error) {
