@@ -157,6 +157,7 @@ export const MarketplaceArea: React.FC<Props> = () => {
                     title: 'Success',
                     description: 'Item has been bought'
                 });
+                queryClient.invalidateQueries({ queryKey: ['marketplace'] });
             },
             onError: (error) => {
                 addToast({
@@ -182,7 +183,6 @@ export const MarketplaceArea: React.FC<Props> = () => {
                     color: 'success'
                 });
                 setListedItem(id, {} as ListedItem);
-                queryClient.invalidateQueries({ queryKey: ['marketplace', 'items', id] });
             },
             onError: (error, _, context) => {
                 addToast({

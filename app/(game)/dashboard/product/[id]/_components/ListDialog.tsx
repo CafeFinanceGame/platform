@@ -9,7 +9,6 @@ import { FaTags } from "react-icons/fa6";
 import React from "react";
 import { useCAFMarketplace } from "@/hooks/useCAFMarketplace";
 import { useParams } from "next/navigation";
-import { SubmitHandler, useForm } from "react-hook-form";
 import { useMarketplaceStore } from "../../../_hooks/useMarketplaceStore";
 import type { ListedItem } from "@/types";
 import { useAccount } from "wagmi";
