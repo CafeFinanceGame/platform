@@ -93,7 +93,7 @@ export const MarketplaceArea: React.FC<Props> = () => {
                 />
                 <Progress
                     label="Freshness"
-                    value={(new Date().getTime() > product.expTime) ? 0 : (product.msgTime - new Date().getTime()) * 100 / (product.expTime - product.msgTime)}
+                    value={(new Date().getTime() > product.expTime) ? 0 : (product.mfgTime - new Date().getTime()) * 100 / (product.expTime - product.mfgTime)}
                     color="secondary"
                     size="sm"
                     showValueLabel
@@ -113,7 +113,7 @@ export const MarketplaceArea: React.FC<Props> = () => {
         return (
             <div className="flex flex-row justify-between w-full gap-2 text-foreground-500">
                 <p>
-                    MFG, {formatTime(product.msgTime * 1e3)}
+                    MFG, {formatTime(product.mfgTime * 1e3)}
                 </p>
                 <p>
                     EXP, {formatTime(product.expTime * 1e3)}

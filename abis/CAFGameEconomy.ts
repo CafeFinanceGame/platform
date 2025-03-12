@@ -258,7 +258,7 @@ export default [
                     },
                     {
                         internalType: "uint8",
-                        name: "decayRatePerHour",
+                        name: "decayRatePerQuarterDay",
                         type: "uint8",
                     },
                     {
@@ -472,7 +472,7 @@ export default [
             },
             {
                 internalType: "uint8",
-                name: "_decayRatePerHour",
+                name: "_decayRatePerQuarterDay",
                 type: "uint8",
             },
             {

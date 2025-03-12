@@ -563,6 +563,20 @@ export default [
         type: "function",
     },
     {
+        inputs: [],
+        name: "autoDecayAll",
+        outputs: [],
+        stateMutability: "nonpayable",
+        type: "function",
+    },
+    {
+        inputs: [],
+        name: "autoProduceProducts",
+        outputs: [],
+        stateMutability: "nonpayable",
+        type: "function",
+    },
+    {
         inputs: [
             {
                 internalType: "address",
@@ -800,7 +814,7 @@ export default [
                         type: "uint8",
                     },
                 ],
-                internalType: "struct ICAFCompanyItems.Company",
+                internalType: "struct ICAFCompanyItems.CompanyItem",
                 name: "",
                 type: "tuple",
             },
@@ -894,11 +908,6 @@ export default [
                         type: "uint8",
                     },
                     {
-                        internalType: "uint256",
-                        name: "price",
-                        type: "uint256",
-                    },
-                    {
                         internalType: "uint8",
                         name: "energy",
                         type: "uint8",
@@ -910,12 +919,12 @@ export default [
                     },
                     {
                         internalType: "uint256",
-                        name: "decayRatePerHour",
+                        name: "decayRatePerQuarterDay",
                         type: "uint256",
                     },
                     {
                         internalType: "uint256",
-                        name: "msgTime",
+                        name: "mfgTime",
                         type: "uint256",
                     },
                     {
@@ -925,7 +934,7 @@ export default [
                     },
                     {
                         internalType: "uint256",
-                        name: "lastDecayedTime",
+                        name: "lastDecayTime",
                         type: "uint256",
                     },
                 ],

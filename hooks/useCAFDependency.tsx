@@ -90,37 +90,37 @@ export const useCAFGameEconomy = (): ICAFGameEconomyHook => {
         COFFEE_BEAN: {
             energy: 50,
             durability: 0,
-            decayRatePerHour: 2,
+            decayRatePerQuarterDay: 2,
             costPrice: 5,
         },
         COFFEE: {
             energy: 100,
             durability: 0,
-            decayRatePerHour: 3,
+            decayRatePerQuarterDay: 3,
             costPrice: 10,
         },
         WATER: {
             energy: 800,
             durability: 0,
-            decayRatePerHour: 2,
+            decayRatePerQuarterDay: 2,
             costPrice: 3
         },
         MILK: {
             energy: 100,
             durability: 0,
-            decayRatePerHour: 4,
+            decayRatePerQuarterDay: 4,
             costPrice: 8
         },
         MATERIAL_MACHINE: {
             energy: 0,
             durability: 100,
-            decayRatePerHour: 1,
+            decayRatePerQuarterDay: 1,
             costPrice: 50
         },
         KETTLE: {
             energy: 0,
             durability: 80,
-            decayRatePerHour: 1,
+            decayRatePerQuarterDay: 1,
             costPrice: 40
         }
     }

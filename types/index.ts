@@ -76,7 +76,7 @@ type EventItem = {
 type ProductEconomy = {
   energy: number;
   durability: number;
-  decayRatePerHour: number;
+  decayRatePerQuarterDay: number;
   costPrice: number;
 }
 
@@ -91,10 +91,9 @@ type ManufacturedProduct = {
 
 type ProductItem = {
   productType: ProductItemType;
-  price: number;
   energy: number;
   durability: number;
-  msgTime: number;
+  mfgTime: number;
   expTime: number;
 }
 

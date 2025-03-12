@@ -47,7 +47,16 @@ export interface ICAFEventItemsActions {
     endEvent(eventId: number): void;
 }
 
-export interface ICAFItemsManagerActions extends IERC1155, ICAFCompanyItemsActions, ICAFProductItemsActions, ICAFEventItemsActions {
+export interface IAutoActions {
+    autoDecayAll(): void;
+    autoProduceProducts(): void;
+}
+export interface ICAFItemsManagerActions extends
+    IERC1155,
+    ICAFCompanyItemsActions,
+    ICAFProductItemsActions,
+    ICAFEventItemsActions,
+    IAutoActions {
     getNextItemId(): Promise<number>;
     popNotListedItem(): Promise<number>;
 }
@@ -228,11 +237,10 @@ export const useCAFItemsManagerActions = (): ICAFItemsManagerActions => {
 
                 return {
                     ...productItem,
-                    price: Number(productItem.price),
-                    decayRatePerHour: Number(productItem.decayRatePerHour),
-                    msgTime: Number(productItem.msgTime),
+                    decayRatePerQuarterDay: Number(productItem.decayRatePerQuarterDay),
+                    mfgTime: Number(productItem.mfgTime),
                     expTime: Number(productItem.expTime),
-                    lastDecayedTime: Number(productItem.lastDecayedTime)
+                    lastDecayTime: Number(productItem.lastDecayTime)
                 } as ProductItem;
             } catch (error) {
                 console.log('Error getting product item', error);
@@ -432,6 +440,36 @@ export const useCAFItemsManagerActions = (): ICAFItemsManagerActions => {
                 return Number(itemId);
             } catch (error) {
                 console.log('Error popping not listed item', error);
+                throw error;
+            }
+        },
+
+        autoDecayAll: async (): Promise<void> => {
+            try {
+                await writeContract(config, {
+                    abi: CAFItemsManagerAbi,
+                    address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
+                    functionName: 'autoDecayAll',
+                    args: [],
+                    account: account.address
+                });
+            } catch (error) {
+                console.log('Error auto decaying all', error);
+                throw error;
+            }
+        },
+
+        autoProduceProducts: async (): Promise<void> => {
+            try {
+                await writeContract(config, {
+                    abi: CAFItemsManagerAbi,
+                    address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
+                    functionName: 'autoProduceProducts',
+                    args: [],
+                    account: account.address
+                });
+            } catch (error) {
+                console.log('Error auto producing products', error);
                 throw error;
             }
         }

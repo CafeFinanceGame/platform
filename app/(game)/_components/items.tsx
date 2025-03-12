@@ -48,7 +48,7 @@ export const ProductItemCard: React.FC<ProductItemProps> = (props) => {
                 "text-[8pt] font-normal"
             )}>
                 <p>EXP, {formatTime(product.expTime * 1e3)}</p>
-                <p>MFG, {formatTime(product.msgTime * 1e3)}</p>
+                <p>MFG, {formatTime(product.mfgTime * 1e3)}</p>
             </div>
         )
     }
@@ -62,7 +62,7 @@ export const ProductItemCard: React.FC<ProductItemProps> = (props) => {
             },
             {
                 label: 'Freshness',
-                value: (new Date().getTime() > product.expTime) ? 0 : (product.msgTime - new Date().getTime()) * 100 / (product.expTime - product.msgTime),
+                value: (new Date().getTime() > product.expTime) ? 0 : (product.mfgTime - new Date().getTime()) * 100 / (product.expTime - product.mfgTime),
                 icon: <IoMdHeart className="text-white" size={12} />
             }
         ];
