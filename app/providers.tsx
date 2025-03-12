@@ -8,9 +8,9 @@ import { ToastProvider } from "@heroui/toast";
 import { useRouter } from "next/navigation";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { WagmiProvider, cookieToInitialState, type Config } from "wagmi";
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { createAppKit } from '@reown/appkit/react'
-import { coreDao } from '@reown/appkit/networks'
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { createAppKit } from "@reown/appkit/react";
+import { coreDao } from "@reown/appkit/networks";
 
 import constants from "@/utils/constants";
 import wagmi from "@/utils/wagmi";
@@ -31,7 +31,7 @@ declare module "@react-types/shared" {
   }
 }
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
 
 createAppKit({
   networks: [coreDao, coreTestnet],
@@ -43,16 +43,22 @@ createAppKit({
     url: app.URL,
     icons: app.ICONS,
   },
-  themeMode: 'light',
-  projectId: constants.walletconnet.PROJECT_ID
+  themeMode: "light",
+  projectId: constants.walletconnet.PROJECT_ID,
 });
 
 export function Providers({ children, themeProps, cookies }: ProvidersProps) {
   const router = useRouter();
-  const initialState = cookieToInitialState(wagmi.wagmiConfig as Config, cookies);
+  const initialState = cookieToInitialState(
+    wagmi.wagmiConfig as Config,
+    cookies,
+  );
 
   return (
-    <WagmiProvider config={wagmi.wagmiConfig as Config} initialState={initialState}>
+    <WagmiProvider
+      config={wagmi.wagmiConfig as Config}
+      initialState={initialState}
+    >
       <QueryClientProvider client={queryClient}>
         <HeroUIProvider navigate={router.push}>
           <NextThemesProvider forcedTheme="dark" {...themeProps}>

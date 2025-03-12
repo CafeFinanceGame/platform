@@ -2,17 +2,14 @@ import "@/styles/globals.css";
 import "react-circular-progressbar/dist/styles.css";
 import { Metadata, Viewport } from "next";
 import clsx from "clsx";
-import { headers } from 'next/headers'
+import { headers } from "next/headers";
 
 import { Providers } from "./providers";
+import { Sidebar } from "./_components/Sidebar";
+import { Topbar } from "./_components/Topbar";
 
 import { siteConfig } from "@/config/site";
 import { fontMontserrat } from "@/config/fonts";
-import { Navbar } from "@/components/navbar";
-import { Sidebar } from "./_components/Sidebar";
-import { Topbar } from "./_components/Topbar";
-import { Navbar1 } from "./_components/Navbar1";
-import { SearchEngine } from "./_components/SearchEngine";
 
 export const metadata: Metadata = {
   title: {
@@ -38,7 +35,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const headersObj = await headers();
-  const cookies = headersObj.get('cookie')!;
+  const cookies = headersObj.get("cookie")!;
 
   return (
     <html suppressHydrationWarning lang="en">
@@ -49,14 +46,15 @@ export default async function RootLayout({
           fontMontserrat.className,
         )}
       >
-        <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }} cookies={cookies}>
+        <Providers
+          cookies={cookies}
+          themeProps={{ attribute: "class", defaultTheme: "dark" }}
+        >
           <div className="flex h-screen overflow-hidden">
             <Sidebar />
             <div className="flex flex-col flex-grow">
               <Topbar />
-              <main className="flex-grow overflow-y-auto">
-                {children}
-              </main>
+              <main className="flex-grow overflow-y-auto">{children}</main>
             </div>
           </div>
         </Providers>

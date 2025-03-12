@@ -1,13 +1,13 @@
-import { PageContainer } from "@/components/layout/container";
 import { HeroSection } from "./_components/HeroSection";
-import { ProductItemCard } from "../_components/items";
+
+import { PageContainer } from "@/components/layout/container";
 
 export default function HomePage() {
-    return (
-        <PageContainer>
-            <p>
-                <HeroSection />
-            </p>
-        </PageContainer>
-    );
+  return (
+    <PageContainer>
+      <p>
+        <HeroSection />
+      </p>
+    </PageContainer>
+  );
 }
