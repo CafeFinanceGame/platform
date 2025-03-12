@@ -45,7 +45,7 @@ export const useCAFGameEconomy = (): ICAFGameEconomyHook => {
 
                 return fee as ActivityEnergyFee;
             } catch (error) {
-                console.error('Error getting activity fee', error);
+                console.log('Error getting activity fee', error);
                 throw error;
             }
         },
@@ -62,7 +62,7 @@ export const useCAFGameEconomy = (): ICAFGameEconomyHook => {
 
                 return Number(price);
             } catch (error) {
-                console.error('Error getting current price', error);
+                console.log('Error getting current price', error);
                 throw error;
             }
         },
@@ -82,7 +82,7 @@ export const useCAFGameEconomy = (): ICAFGameEconomyHook => {
                     costPrice: Number(economy.costPrice)
                 } as ProductEconomy;
             } catch (error) {
-                console.error('Error getting product economy', error);
+                console.log('Error getting product economy', error);
                 throw error;
             }
         },

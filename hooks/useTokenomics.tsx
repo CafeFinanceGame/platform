@@ -9,7 +9,7 @@ const contracts = constants.contracts;
 const config = wagmi.wagmiConfig;
 
 interface ICAFTokenActions {
-    approve(amount: number): Promise<void>;
+    approve(address: string, amount: number): Promise<void>;
     balanceOf(owner: string): Promise<number>;
     transfer(to: string, amount: number): Promise<void>;
 }
@@ -18,17 +18,17 @@ export const useCAFToken = (): ICAFTokenActions => {
     const account = useAccount();
 
     return {
-        approve: async (amount: number): Promise<void> => {
+        approve: async (address: string, amount: number): Promise<void> => {
             try {
                 await writeContract(config, {
                     abi: CAFTokenAbi,
                     address: contracts.CAF_TOKEN_ADDRESS,
                     functionName: 'approve',
-                    args: [contracts.CAF_MARKETPLACE_ADDRESS, BigInt(amount)],
+                    args: [address as Address, BigInt(amount)],
                     account: account.address
                 });
             } catch (error) {
-                console.error('Error approving token', error);
+                console.log('Error approving token', error);
             }
         },
 
@@ -47,7 +47,7 @@ export const useCAFToken = (): ICAFTokenActions => {
 
                 return Number(balance);
             } catch (error) {
-                console.error('Error getting balance', error);
+                console.log('Error getting balance', error);
                 throw error;
             }
         },
@@ -66,7 +66,7 @@ export const useCAFToken = (): ICAFTokenActions => {
                     account: account.address
                 });
             } catch (error) {
-                console.error('Error transferring token', error);
+                console.log('Error transferring token', error);
             }
         }
     };

@@ -1,6 +1,6 @@
 "use client";
 
-import { ProductItem } from "@/app/(game)/_components/items";
+import { ProductItemCard } from "@/app/(game)/_components/items";
 import { useCAFItemsManagerActions } from "@/hooks/useCAFItems";
 import { Skeleton } from "@heroui/react";
 import { useQuery } from "@tanstack/react-query";
@@ -44,7 +44,7 @@ export const Products: React.FC<Props> = () => {
     return (
         <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-4">
             {products?.map((product, index) => (
-                <ProductItem
+                <ProductItemCard
                     key={index}
                     product={product}
                 />

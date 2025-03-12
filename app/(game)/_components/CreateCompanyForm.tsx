@@ -76,7 +76,6 @@ export const CreateCompanyForm: React.FC<Props> = (props) => {
             await createCompanyItem(address, parsedRole[0]);
         },
         onError: (error) => {
-            console.error('Error creating company', error);
             addToast({
                 color: "danger",
                 title: "Error",

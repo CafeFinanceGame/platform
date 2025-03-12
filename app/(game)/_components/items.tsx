@@ -8,6 +8,7 @@ import { IoMdHeart } from "react-icons/io";
 import { ListedItem, ProductItem as CAFProductItem, ProductItemType as ProductItemEnum, ProductItem as ProductItemType } from "@/types"
 import clsx from "clsx"
 import numeral from "numeral";
+import constants from "@/utils/constants";
 
 interface ProductItemProps extends React.HTMLAttributes<HTMLDivElement> {
     product: CAFProductItem;
@@ -16,39 +17,14 @@ interface ProductItemProps extends React.HTMLAttributes<HTMLDivElement> {
     customTools?: (product: CAFProductItem) => React.ReactNode;
 }
 
-export const ProductItem: React.FC<ProductItemProps> = (props) => {
+export const ProductItemCard: React.FC<ProductItemProps> = (props) => {
     const {
         product,
         metadata,
         listedItem
     } = props;
 
-    const productTypes = {
-        [ProductItemEnum.COFFEE_BEAN]: {
-            image: '/assets/item-product-coffee_bean.png',
-            label: 'Coffee Bean',
-        },
-        [ProductItemEnum.COFFEE]: {
-            image: '/assets/item-product-black_coffee.png',
-            label: 'Black Coffee',
-        },
-        [ProductItemEnum.MILK]: {
-            image: '/assets/item-product-milk.png',
-            label: 'Milk',
-        },
-        [ProductItemEnum.WATER]: {
-            image: '/assets/item-product-water.png',
-            label: 'Water',
-        },
-        [ProductItemEnum.MACHINE_MATERIAL]: {
-            image: '/assets/item-product-material_machine.png',
-            label: 'Material Machine',
-        },
-        [ProductItemEnum.KETTLE]: {
-            image: '/assets/item-product-kettle.png',
-            label: 'Kettle',
-        }
-    } as any;
+    const productTypes = constants.images;
 
     const Header = () => {
         return (
@@ -131,7 +107,12 @@ export const ProductItem: React.FC<ProductItemProps> = (props) => {
 
     const ProductImage = () => {
         return (
-            <img src={productTypes[product.productType].image} alt="Product Image" className="md:w-24 lg:w-32 aspect-square object-cover" />
+            <img src={productTypes[product.productType].image} alt="Product Image"
+                className={clsx(
+                    "md:w-24 lg:w-32 aspect-square object-cover",
+                    "group-hover::scale-[1.01] transition-transform duration-300 ease-in-out"
+                )}
+            />
         )
     }
 
@@ -156,18 +137,17 @@ export const ProductItem: React.FC<ProductItemProps> = (props) => {
 
     return (
         <div className={clsx(
-            "relative w-fit min-w-60 aspect-[76/100] flex flex-col gap-2 items-center justify-center overflow-hidden",
-            "hover:scale-105 transition-transform duration-300 ease-in-out"
+            "relative w-fit flex flex-col gap-2 items-center justify-center"
         )}>
-            <div
-                className="w-64 h-64 rounded-full bg-primary-500/25 flex blur-3xl absolute right-0 top-0 z-0"
-            />
             <div className={clsx(
-                "rounded-[32px] border-2 border-default-200 z-10",
-                "w-full h-full",
+                "relative rounded-[32px] border-2 border-default-200 z-10 overflow-hidden",
+                "w-full min-w-60 aspect-[76/100]",
                 "flex flex-col gap-2 p-4 items-center justify-center",
-                "cursor-pointer"
+                "cursor-pointer",
             )}>
+                <div
+                    className="w-64 h-64 rounded-full bg-primary-500/25 flex blur-3xl absolute right-0 top-0 z-0"
+                />
                 <Header />
                 <ProductImage />
                 <Body />

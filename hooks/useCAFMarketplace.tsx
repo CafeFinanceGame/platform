@@ -1,5 +1,5 @@
 import { useAccount } from 'wagmi'
-import { writeContract, readContract } from '@wagmi/core'
+import { writeContract, readContract, waitForTransactionReceipt } from '@wagmi/core'
 import type { ListedItem, ProductItem } from '@/types';
 import constants from '@/utils/constants';
 import wagmi from "@/utils/wagmi";
@@ -17,7 +17,7 @@ export interface ICAFMarketplaceActions {
     resell(itemId: number): Promise<void>;
     calculateResalePrice(itemId: number): Promise<number>;
     getListedItem(itemId: number): Promise<ListedItem>;
-    getAllListedItemIds(): Promise<number []>;
+    getAllListedItemIds(): Promise<number[]>;
 }
 
 export const useCAFMarketplace = (): ICAFMarketplaceActions => {
@@ -26,15 +26,24 @@ export const useCAFMarketplace = (): ICAFMarketplaceActions => {
     return {
         buy: async (itemId: number): Promise<void> => {
             try {
-                await writeContract(config, {
+                const tx = await writeContract(config, {
                     abi: CAFMarketplaceAbi,
                     address: contracts.CAF_MARKETPLACE_ADDRESS,
                     functionName: 'buy',
                     args: [BigInt(itemId)],
                     account: account.address
                 });
+
+                const receipt = await waitForTransactionReceipt(config, {
+                    hash: tx
+                });
+
+                if (receipt.status === 'reverted') {
+                    throw new Error('Transaction failed');
+                }
             } catch (error) {
-                console.error('Error buying item', error);
+                console.log('Error buying item', error);
+                throw new Error('Error buying item');
             }
         },
 
@@ -48,7 +57,8 @@ export const useCAFMarketplace = (): ICAFMarketplaceActions => {
                     account: account.address
                 });
             } catch (error) {
-                console.error('Error listing item', error);
+                console.log('Error listing item', error);
+                throw new Error('Error listing item');
             }
         },
 
@@ -62,7 +72,8 @@ export const useCAFMarketplace = (): ICAFMarketplaceActions => {
                     account: account.address
                 });
             } catch (error) {
-                console.error('Error unlisting item', error);
+                console.log('Error unlisting item', error);
+                throw new Error('Error unlisting item');
             }
         },
 
@@ -76,7 +87,8 @@ export const useCAFMarketplace = (): ICAFMarketplaceActions => {
                     account: account.address
                 });
             } catch (error) {
-                console.error('Error updating price', error);
+                console.log('Error updating price', error);
+                throw new Error('Error updating price');
             }
         },
 
@@ -90,7 +102,8 @@ export const useCAFMarketplace = (): ICAFMarketplaceActions => {
                     account: account.address
                 });
             } catch (error) {
-                console.error('Error reselling item', error);
+                console.log('Error reselling item', error);
+                throw new Error('Error reselling item');
             }
         },
 
@@ -105,7 +118,7 @@ export const useCAFMarketplace = (): ICAFMarketplaceActions => {
 
                 return Number(price);
             } catch (error) {
-                console.error('Error calculating resale price', error);
+                console.log('Error calculating resale price', error);
                 throw error;
             }
         },
@@ -125,12 +138,12 @@ export const useCAFMarketplace = (): ICAFMarketplaceActions => {
                     price: Number(item.price)
                 } as ListedItem;
             } catch (error) {
-                console.error('Error getting listed item', error);
+                console.log('Error getting listed item', error);
                 throw error;
             }
         },
 
-        getAllListedItemIds: async (): Promise<number []> => {
+        getAllListedItemIds: async (): Promise<number[]> => {
             try {
                 const items = await readContract(config, {
                     abi: CAFMarketplaceAbi,
@@ -140,7 +153,7 @@ export const useCAFMarketplace = (): ICAFMarketplaceActions => {
 
                 return items.map(item => Number(item));
             } catch (error) {
-                console.error('Error getting all listed items', error);
+                console.log('Error getting all listed items', error);
                 throw error;
             }
         },
@@ -154,7 +167,8 @@ export const useCAFMarketplace = (): ICAFMarketplaceActions => {
                     account: account.address
                 });
             } catch (error) {
-                console.error('Error auto listing items', error);
+                console.log('Error auto listing items', error);
+                throw new Error('Error auto listing items');
             }
         }
     }
