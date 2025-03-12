@@ -1,0 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=ADLaM+Display&display=swap');
+
+#hero-title{
+    font-family: 'ADLaM Display', sans-serif;
+    @apply text-9xl;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 1rem;
+}
