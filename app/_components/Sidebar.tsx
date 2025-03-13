@@ -22,7 +22,7 @@ export const Sidebar: React.FC<Props> = () => {
     {
       name: "Marketplace",
       icon: BiStoreAlt,
-      href: "/marketplace",
+      href: "/dashboard/marketplace",
     },
   ];
 
