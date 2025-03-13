@@ -10,8 +10,10 @@ import numeral from "numeral";
 import { ListedItem, ProductItem as CAFProductItem } from "@/types";
 import { CAFButton } from "@/components/ui/button";
 import constants from "@/utils/constants";
+import { Skeleton } from "@heroui/react";
 
 interface ProductItemProps extends React.HTMLAttributes<HTMLDivElement> {
+  isSkeleton?: boolean;
   product: CAFProductItem;
   metadata?: any;
   listedItem?: ListedItem;
@@ -19,7 +21,7 @@ interface ProductItemProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export const ProductItemCard: React.FC<ProductItemProps> = (props) => {
-  const { product, metadata, listedItem } = props;
+  const { product, isSkeleton = false, listedItem } = props;
 
   const productTypes = constants.images;
 
@@ -70,7 +72,7 @@ export const ProductItemCard: React.FC<ProductItemProps> = (props) => {
           new Date().getTime() > product.expTime
             ? 0
             : ((product.mfgTime - new Date().getTime()) * 100) /
-              (product.expTime - product.mfgTime),
+            (product.expTime - product.mfgTime),
         icon: <IoMdHeart className="text-white" size={12} />,
       },
     ];
@@ -125,7 +127,7 @@ export const ProductItemCard: React.FC<ProductItemProps> = (props) => {
         alt={`Product: ${productTypes[product.productType].label}`}
         className={clsx(
           "md:w-24 lg:w-32 aspect-square object-cover",
-          "group-hover::scale-[1.01] transition-transform duration-300 ease-in-out",
+          "group-hover::scale-[1.01] transition-transform duration-300 ease-in-out z-10",
         )}
         src={productTypes[product.productType].image}
       />
@@ -149,6 +151,18 @@ export const ProductItemCard: React.FC<ProductItemProps> = (props) => {
       </div>
     );
   };
+
+  if (isSkeleton) {
+    return (
+      <div
+        className={clsx(
+          "relative w-fit flex flex-col gap-2 items-center justify-center",
+        )}
+      >
+        <Skeleton className="rounded-[32px] border-2 border-default-200 z-10 w-full min-w-72 aspect-[76/100]" />
+      </div>
+    )
+  }
 
   return (
     <div
