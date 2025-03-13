@@ -12,7 +12,7 @@ export const Sidebar: React.FC<Props> = () => {
     {
       name: "Dashboard",
       icon: TbSmartHome,
-      href: "/",
+      href: "/dashboard/company",
     },
     {
       name: "Games",
