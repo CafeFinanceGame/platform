@@ -12,7 +12,7 @@ import { IoIosAddCircleOutline } from "react-icons/io";
 import { useCAFToken } from "@/hooks/useTokenomics";
 import { useCAFItemsManagerActions } from "@/hooks/useCAFItems";
 import { CompanyType } from "@/types";
-import { CAFButton } from "@/components/ui/button";
+import { CAFButton, soundClick } from "@/components/ui/button";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> { }
 export const Navbar1: React.FC<Props> = () => {
@@ -112,7 +112,10 @@ export const Navbar1: React.FC<Props> = () => {
           }}
           description={<Resources />}
           name="Company"
-          onClick={() => open()}
+          onClick={() => {
+            soundClick.play();
+            open();
+          }}
         />
       )}
     </>

@@ -134,19 +134,6 @@ export default [
   },
   {
     inputs: [],
-    name: "INITIAL_INACTIVE_MATERIAL_PRODUCT_SUPPLY",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
     name: "SYSTEM_ROLE",
     outputs: [
       {
@@ -222,7 +209,7 @@ export default [
         components: [
           {
             internalType: "uint256",
-            name: "manufacturedPerHour",
+            name: "manufacturedPerQuarterDay",
             type: "uint256",
           },
         ],
@@ -438,7 +425,7 @@ export default [
       },
       {
         internalType: "uint256",
-        name: "_manufacturedPerHour",
+        name: "_manufacturedPerQuarterDay",
         type: "uint256",
       },
     ],
@@ -472,7 +459,7 @@ export default [
       },
       {
         internalType: "uint8",
-        name: "_decayRatePerQuarterDay",
+        name: "_decayRatePerHour",
         type: "uint8",
       },
       {

@@ -29,11 +29,13 @@ interface ICAFGameEconomyParameters {
   MILK: ProductEconomy;
   MATERIAL_MACHINE: ProductEconomy;
   KETTLE: ProductEconomy;
+
+  AUTO_PERIOD_TIME: number;
 }
 
 interface ICAFGameEconomyHook
   extends ICAFGameEconomyActions,
-    ICAFGameEconomyParameters {}
+  ICAFGameEconomyParameters { }
 export const useCAFGameEconomy = (): ICAFGameEconomyHook => {
   const account = useAccount();
 
@@ -132,5 +134,7 @@ export const useCAFGameEconomy = (): ICAFGameEconomyHook => {
       decayRatePerQuarterDay: 1,
       costPrice: 40,
     },
+
+    AUTO_PERIOD_TIME: 6 * 60 * 60 * 1000,
   };
 };

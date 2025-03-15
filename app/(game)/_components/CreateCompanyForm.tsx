@@ -96,9 +96,6 @@ export const CreateCompanyForm: React.FC<Props> = (props) => {
         description: "Company created successfully",
       });
       setShowConfetti(true);
-      setTimeout(() => {
-        router.push("/dashboard/company");
-      }, 2000);
     },
   });
 

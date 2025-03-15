@@ -24,6 +24,7 @@ export interface ICAFMarketplaceActions {
   calculateResalePrice(itemId: number): Promise<number>;
   getListedItem(itemId: number): Promise<ListedItem>;
   getAllListedItemIds(): Promise<number[]>;
+  getLastAutoListTime(): Promise<number>;
 }
 
 export const useCAFMarketplace = (): ICAFMarketplaceActions => {
@@ -62,7 +63,7 @@ export const useCAFMarketplace = (): ICAFMarketplaceActions => {
         if (!account.isConnected) {
           throw new Error("Please connect your wallet");
         }
-        
+
         await writeContract(config, {
           abi: CAFMarketplaceAbi,
           address: contracts.CAF_MARKETPLACE_ADDRESS,
@@ -119,7 +120,7 @@ export const useCAFMarketplace = (): ICAFMarketplaceActions => {
         if (!account.isConnected) {
           throw new Error("Please connect your wallet");
         }
-        
+
         await writeContract(config, {
           abi: CAFMarketplaceAbi,
           address: contracts.CAF_MARKETPLACE_ADDRESS,
@@ -195,6 +196,21 @@ export const useCAFMarketplace = (): ICAFMarketplaceActions => {
       } catch (error) {
         console.log("Error auto listing items", error);
         throw new Error("Error auto listing items");
+      }
+    },
+
+    getLastAutoListTime: async (): Promise<number> => {
+      try {
+        const id = await readContract(config, {
+          abi: CAFMarketplaceAbi,
+          address: contracts.CAF_MARKETPLACE_ADDRESS,
+          functionName: "getLastAutoListTime",
+        });
+
+        return Number(id);
+      } catch (error) {
+        console.log("Error getting last auto listed item", error);
+        throw error;
       }
     },
   };

@@ -73,13 +73,15 @@ export interface ICAFEventItemsActions {
 export interface IAutoActions {
   autoDecayAll(): void;
   autoProduceProducts(): void;
+  getLastAutoDecayTime(): Promise<number>;
+  getLastAutoProduceTime(): Promise<number>;
 }
 export interface ICAFItemsManagerActions
   extends IERC1155,
-    ICAFCompanyItemsActions,
-    ICAFProductItemsActions,
-    ICAFEventItemsActions,
-    IAutoActions {
+  ICAFCompanyItemsActions,
+  ICAFProductItemsActions,
+  ICAFEventItemsActions,
+  IAutoActions {
   getNextItemId(): Promise<number>;
   popNotListedItem(): Promise<number>;
 }
@@ -508,6 +510,38 @@ export const useCAFItemsManagerActions = (): ICAFItemsManagerActions => {
         });
       } catch (error) {
         console.log("Error auto producing products", error);
+        throw error;
+      }
+    },
+
+    getLastAutoDecayTime: async (): Promise<number> => {
+      try {
+        const lastAutoDecayTime = await readContract(config, {
+          abi: CAFItemsManagerAbi,
+          address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
+          functionName: "getLastAutoDecayTime",
+          args: [],
+        });
+
+        return Number(lastAutoDecayTime);
+      } catch (error) {
+        console.log("Error getting last auto decay time", error);
+        throw error;
+      }
+    },
+
+    getLastAutoProduceTime: async (): Promise<number> => {
+      try {
+        const lastAutoProduceTime = await readContract(config, {
+          abi: CAFItemsManagerAbi,
+          address: contracts.CAF_ITEMS_MANAGER_ADDRESS,
+          functionName: "getLastAutoProduceProducts",
+          args: [],
+        });
+
+        return Number(lastAutoProduceTime);
+      } catch (error) {
+        console.log("Error getting last auto produce time", error);
         throw error;
       }
     },

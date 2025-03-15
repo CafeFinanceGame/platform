@@ -1,3 +1,5 @@
+"use client";
+
 import { extendVariants, Button } from "@heroui/react";
 import { Howl } from "howler";
 

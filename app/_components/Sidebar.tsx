@@ -1,3 +1,5 @@
+"use client";
+
 import { TbSmartHome } from "react-icons/tb";
 import { GrGamepad } from "react-icons/gr";
 import { BiStoreAlt } from "react-icons/bi";
@@ -5,8 +7,9 @@ import { Link } from "@heroui/link";
 import { Button } from "@heroui/button";
 
 import { Logo } from "@/components/icons";
+import { soundClick } from "@/components/ui/button";
 
-interface Props extends React.HTMLAttributes<HTMLDivElement> {}
+interface Props extends React.HTMLAttributes<HTMLDivElement> { }
 export const Sidebar: React.FC<Props> = () => {
   const links = [
     {
@@ -30,9 +33,7 @@ export const Sidebar: React.FC<Props> = () => {
     <aside className="h-full w-24 p-2 z-10">
       <div className="flex flex-col items-center gap-8">
         <div className="rounded-full bg-default p-1">
-          <Link className="w-fit h-fit" href="/">
-            <Logo />
-          </Link>
+          <Logo />
         </div>
         <ul className="p-1 rounded-full bg-default flex flex-col items-center justify-center">
           {links.map((link) => (
@@ -45,6 +46,9 @@ export const Sidebar: React.FC<Props> = () => {
                 radius="full"
                 size="md"
                 variant="light"
+                onPress={() => {
+                  soundClick.play();
+                }}
               >
                 <link.icon size={20} />
               </Button>

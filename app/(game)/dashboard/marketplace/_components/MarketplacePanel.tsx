@@ -3,21 +3,32 @@
 import { useEffect, useState } from "react";
 import { useGameClock } from "@/app/_hooks/useGameClock";
 import { CountdownClock } from "@/app/(game)/_components/CountdownClock";
+import { useQuery } from "@tanstack/react-query";
+import { useCAFMarketplace } from "@/hooks/useCAFMarketplace";
+import { useCAFGameEconomy } from "@/hooks/useCAFDependency";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> { }
 
 export const MarketplacePanel: React.FC<Props> = () => {
-    const { lastProduceTime, setLastProduceTime } = useGameClock();
-    const NEXT_PRODUCE_PERIOD = 6 * 60 * 60 * 1000;
+    const { getLastAutoListTime } = useCAFMarketplace();
+    const { AUTO_PERIOD_TIME } = useCAFGameEconomy();
     const [remainingTime, setRemainingTime] = useState(0);
+    const { data: lastProduceTime } = useQuery({
+        queryKey: ["marketplace", "panel"],
+        queryFn: async (): Promise<number> => {
+            const lastAutoListTime = await getLastAutoListTime();
 
+            return lastAutoListTime;
+        },
+        refetchInterval: 1000,
+    })
     useEffect(() => {
         const updateCountdown = () => {
-            // mock lastProduceTime 2 hours ago
-            const _lastProduceTime = Date.now() - 2 * 60 * 60 * 1000;
+            if (!lastProduceTime) return;
+
             const now = Date.now();
-            const elapsedTime = now - _lastProduceTime;
-            const newRemainingTime = Math.max((NEXT_PRODUCE_PERIOD - elapsedTime) / 1000, 0);
+            const elapsedTime = now - lastProduceTime;
+            const newRemainingTime = Math.max((AUTO_PERIOD_TIME - elapsedTime) / 1000, 0);
             setRemainingTime(newRemainingTime);
         };
 
