@@ -9,8 +9,9 @@ import { PiNetworkBold } from "react-icons/pi";
 import { LuGamepad2 } from "react-icons/lu";
 
 import { GetStartedDialog } from "@/app/(game)/_components/GetStartedDialog";
+import constants from "@/utils/constants";
 
-interface Props extends React.HTMLAttributes<HTMLDivElement> {}
+interface Props extends React.HTMLAttributes<HTMLDivElement> { }
 export const HeroSection: React.FC<Props> = () => {
   const HeroCard1 = () => {
     return (
@@ -120,7 +121,7 @@ export const HeroSection: React.FC<Props> = () => {
         <Tags />
         <div className="flex flex-row gap-4 items-center w-fit">
           <GetStartedDialog />
-          <Link showAnchorIcon color="foreground" href="/about">
+          <Link showAnchorIcon color="foreground" href={constants.platform.DOCS} className="cursor-pointer" target="_blank">
             Learn More
           </Link>
         </div>

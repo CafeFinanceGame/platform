@@ -3,6 +3,7 @@ import "react-circular-progressbar/dist/styles.css";
 import { Metadata, Viewport } from "next";
 import clsx from "clsx";
 import { headers } from "next/headers";
+import { Howl } from "howler";
 
 import { Providers } from "./providers";
 import { Sidebar } from "./_components/Sidebar";
@@ -10,6 +11,7 @@ import { Topbar } from "./_components/Topbar";
 
 import { siteConfig } from "@/config/site";
 import { fontMontserrat } from "@/config/fonts";
+import BackgroundMusic from "./(landing)/_components/BackgroundMusic";
 
 export const metadata: Metadata = {
   title: {
@@ -29,6 +31,13 @@ export const viewport: Viewport = {
   ],
 };
 
+const backgroundMusic = new Howl({
+  src: ["/assets/music-background.mp3"],
+  autoplay: true,
+  loop: true,
+  volume: 0.5
+})
+
 export default async function RootLayout({
   children,
 }: {
@@ -36,6 +45,7 @@ export default async function RootLayout({
 }) {
   const headersObj = await headers();
   const cookies = headersObj.get("cookie")!;
+  backgroundMusic.play();
 
   return (
     <html suppressHydrationWarning lang="en">
@@ -50,6 +60,7 @@ export default async function RootLayout({
           cookies={cookies}
           themeProps={{ attribute: "class", defaultTheme: "dark" }}
         >
+          <BackgroundMusic />
           <div className="flex h-screen overflow-hidden">
             <Sidebar />
             <div className="flex flex-col flex-grow">

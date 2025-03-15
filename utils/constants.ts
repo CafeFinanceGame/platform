@@ -2,6 +2,9 @@ import { Address } from "viem";
 
 import { ProductItemType } from "@/types";
 export default {
+  platform: {
+    DOCS: process.env.NEXT_PUBLIC_PLATFORM_DOCS_URL as string,
+  },
   contracts: {
     CAF_CONTRACT_REGISTRY_ADDRESS: process.env
       .NEXT_PUBLIC_CAF_CONTRACT_REGISTRY_CONTRACT_ADDRESS as Address,
@@ -38,7 +41,7 @@ export default {
     },
     [ProductItemType.MACHINE_MATERIAL]: {
       image: "/assets/item-product-material_machine.png",
-      label: "Material Machine",
+      label: "Machine",
     },
     [ProductItemType.KETTLE]: {
       image: "/assets/item-product-kettle.png",

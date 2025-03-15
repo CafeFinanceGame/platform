@@ -6,21 +6,22 @@ import { useAccount } from "wagmi";
 
 import { useCAFItemsManagerActions } from "@/hooks/useCAFItems";
 import { ProductItemCard } from "@/app/(game)/_components/items";
+import { Empty } from "@/components/Empty";
 
-interface Props extends React.HTMLAttributes<HTMLDivElement> {}
+interface Props extends React.HTMLAttributes<HTMLDivElement> { }
 export const Products: React.FC<Props> = () => {
   const { getProductItemIdsByOwner, getProductItem } =
     useCAFItemsManagerActions();
   const { address } = useAccount();
-  const { data: productIds, isLoading } = useQuery({
+  const { data: ids, isLoading } = useQuery({
     queryKey: ["products", "company", address],
     queryFn: async () => {
       if (address) {
-        const productIds = await getProductItemIdsByOwner(address);
+        const ids = await getProductItemIdsByOwner(address);
 
-        console.log(productIds);
+        console.log(ids);
 
-        return productIds;
+        return ids;
       }
     },
     enabled: !!address,
@@ -31,12 +32,12 @@ export const Products: React.FC<Props> = () => {
     isError,
     isSuccess,
   } = useQuery({
-    queryKey: ["products", productIds],
+    queryKey: ["products", ids],
     queryFn: async () => {
-      if (productIds) {
+      if (ids) {
         const _products = await Promise.all(
-          productIds.map(async (productId: number) => {
-            const product = await getProductItem(productId);
+          ids.map(async (id: number) => {
+            const product = await getProductItem(id);
 
             return product;
           }),
@@ -45,11 +46,13 @@ export const Products: React.FC<Props> = () => {
         return _products;
       }
     },
-    enabled: !!productIds,
+    enabled: !!ids,
   });
 
   if (isLoading) return <Skeleton className="w-full h-full rounded-3xl" />;
 
+  if (products?.length === 0) return <Empty emptyText="No products available" />
+  
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-4">
       {products?.map((product, index) => (

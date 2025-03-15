@@ -1,7 +1,7 @@
 "use client";
 
 import { addToast } from "@heroui/react";
-import { useMutation, useQuery, useInfiniteQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { nanoid } from "nanoid";
 import numeral from "numeral";
 import React from "react";
@@ -24,6 +24,8 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> { }
 export const ListedItems: React.FC<Props> = () => {
   const { searchKeyword } = useGlobalState();
 
+  const queryClient = useQueryClient();
+
   const { getAllListedItemIds, getListedItem, buy, unlist } =
     useCAFMarketplace();
   const { getProductItem, hasProductItem } = useCAFItemsManagerActions();
@@ -42,59 +44,6 @@ export const ListedItems: React.FC<Props> = () => {
       const listedItemIds = await getAllListedItemIds();
 
       return listedItemIds;
-    },
-  });
-
-  const {
-    mutate: buyItem,
-    isPending: isBuying,
-    isSuccess: isBuySuccess,
-    isError: isBuyError,
-  } = useMutation({
-    mutationKey: ["marketplace", "buy"],
-    mutationFn: async ({ id, price }: { id: number; price: number }) => {
-      await approve(constants.contracts.CAF_MARKETPLACE_ADDRESS, price);
-      await buy(id);
-    },
-    onSuccess: () => {
-      addToast({
-        color: "success",
-        title: "Success",
-        description: "Item has been bought",
-      });
-    },
-    onError: (error) => {
-      addToast({
-        color: "danger",
-        title: "Error",
-        description: error.message,
-      });
-    },
-  });
-
-  const {
-    mutate: unlistItem,
-    isPending: isUnlisting,
-    isSuccess: isUnlistSuccess,
-    isError: isUnlistError,
-  } = useMutation({
-    mutationKey: ["marketplace", "unlist"],
-    mutationFn: async (id: number) => {
-      await unlist(id);
-    },
-    onSuccess: () => {
-      addToast({
-        title: "Success",
-        description: "Item has been unlisted",
-        color: "success",
-      });
-    },
-    onError: (error) => {
-      addToast({
-        color: "danger",
-        title: "Error",
-        description: error.message,
-      });
     },
   });
 
@@ -139,10 +88,68 @@ export const ListedItems: React.FC<Props> = () => {
     listedItem: ListedItem;
     isSkeleton?: boolean;
   }) => {
+    const {
+      mutate: buyItem,
+      isPending: isBuying,
+      isSuccess: isBuySuccess,
+      isError: isBuyError,
+    } = useMutation({
+      mutationKey: ["marketplace", "buy", listedItem.id],
+      mutationFn: async ({ id, price }: { id: number; price: number }) => {
+        await approve(constants.contracts.CAF_MARKETPLACE_ADDRESS, price);
+        await buy(id);
+      },
+      onSuccess: () => {
+        addToast({
+          color: "success",
+          title: "Success",
+          description: "Item has been bought",
+        });
+      },
+      onError: (error) => {
+        addToast({
+          color: "danger",
+          title: "Error",
+          description: error.message,
+        });
+      },
+    });
+
+    const {
+      mutate: unlistItem,
+      isPending: isUnlisting,
+      isSuccess: isUnlistSuccess,
+      isError: isUnlistError,
+    } = useMutation({
+      mutationKey: ["marketplace", "unlist", listedItem.id],
+      mutationFn: async (id: number) => {
+        await unlist(id);
+      },
+      onSuccess: () => {
+        addToast({
+          title: "Success",
+          description: "Item has been unlisted",
+          color: "success",
+        });
+
+        queryClient.invalidateQueries({
+          queryKey: ["marketplace", "getAllListedItems"],
+        });
+      },
+      onError: (error) => {
+        addToast({
+          color: "danger",
+          title: "Error",
+          description: error.message,
+        });
+      },
+    });
+
     const isOwner = listedItem.owner === account.address;
 
     return (
       <ProductItemCard
+        id={listedItem.id}
         isSkeleton={isSkeleton}
         customTools={(product) => (
           <div className="w-full flex items-center justify-between space-x-2">

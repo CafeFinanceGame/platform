@@ -137,6 +137,32 @@ export default [
     anonymous: false,
     inputs: [
       {
+        indexed: false,
+        internalType: "uint256",
+        name: "lastProduced",
+        type: "uint256",
+      },
+    ],
+    name: "AllAutoProductsProduced",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "lastDecayed",
+        type: "uint256",
+      },
+    ],
+    name: "AllItemsDecayed",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
         indexed: true,
         internalType: "address",
         name: "account",
@@ -879,6 +905,32 @@ export default [
   },
   {
     inputs: [],
+    name: "getLastAutoDecayTime",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getLastAutoProduceProducts",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "getNextItemId",
     outputs: [
       {
@@ -1198,7 +1250,7 @@ export default [
       },
       {
         internalType: "uint256",
-        name: "_rateProducedPerHour",
+        name: "_ratePerQuarterDay",
         type: "uint256",
       },
     ],

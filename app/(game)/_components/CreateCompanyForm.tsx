@@ -7,7 +7,7 @@ import { FaBuilding } from "react-icons/fa6";
 import { useMutation } from "@tanstack/react-query";
 import { addToast } from "@heroui/react";
 import { useRouter } from "next/navigation";
-
+import Confetti from 'react-confetti'
 import { useCompanyStore } from "../dashboard/_hooks/useCompanyStore";
 
 import CAFItemsManagerAbis from "@/abis/CAFItemsManager";
@@ -39,6 +39,8 @@ export const CreateCompanyForm: React.FC<Props> = (props) => {
   const { company, setCompany } = useCompanyStore();
   const [role, setRole] = React.useState<Selection>(new Set([]));
   const router = useRouter();
+
+  const [showConfetti, setShowConfetti] = React.useState(false);
 
   useWatchContractEvent({
     abi: CAFItemsManagerAbis,
@@ -93,7 +95,7 @@ export const CreateCompanyForm: React.FC<Props> = (props) => {
         title: "Success",
         description: "Company created successfully",
       });
-
+      setShowConfetti(true);
       setTimeout(() => {
         router.push("/dashboard/company");
       }, 2000);
@@ -105,6 +107,13 @@ export const CreateCompanyForm: React.FC<Props> = (props) => {
 
   return (
     <div className="flex flex-col gap-4 w-full">
+      {showConfetti && <Confetti
+        className="absolute top-0 left-0 w-full h-full z-50"
+        recycle={true}
+        gravity={0.5}
+        initialVelocityX={5}
+        initialVelocityY={-10}
+      />}
       <Select
         classNames={{
           label: "text-default-500",
