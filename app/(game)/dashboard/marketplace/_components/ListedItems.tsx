@@ -47,33 +47,6 @@ export const ListedItems: React.FC<Props> = () => {
     },
   });
 
-  const {
-    mutate: buyItem,
-    isPending: isBuying,
-    isSuccess: isBuySuccess,
-    isError: isBuyError,
-  } = useMutation({
-    mutationKey: ["marketplace", "buy"],
-    mutationFn: async ({ id, price }: { id: number; price: number }) => {
-      await approve(constants.contracts.CAF_MARKETPLACE_ADDRESS, price);
-      await buy(id);
-    },
-    onSuccess: () => {
-      addToast({
-        color: "success",
-        title: "Success",
-        description: "Item has been bought",
-      });
-    },
-    onError: (error) => {
-      addToast({
-        color: "danger",
-        title: "Error",
-        description: error.message,
-      });
-    },
-  });
-
   const { data: listedItems,
     isLoading: isLoadingItems,
     isFetchingNextPage: isFetchingItems,
@@ -116,6 +89,33 @@ export const ListedItems: React.FC<Props> = () => {
     isSkeleton?: boolean;
   }) => {
     const {
+      mutate: buyItem,
+      isPending: isBuying,
+      isSuccess: isBuySuccess,
+      isError: isBuyError,
+    } = useMutation({
+      mutationKey: ["marketplace", "buy", listedItem.id],
+      mutationFn: async ({ id, price }: { id: number; price: number }) => {
+        await approve(constants.contracts.CAF_MARKETPLACE_ADDRESS, price);
+        await buy(id);
+      },
+      onSuccess: () => {
+        addToast({
+          color: "success",
+          title: "Success",
+          description: "Item has been bought",
+        });
+      },
+      onError: (error) => {
+        addToast({
+          color: "danger",
+          title: "Error",
+          description: error.message,
+        });
+      },
+    });
+
+    const {
       mutate: unlistItem,
       isPending: isUnlisting,
       isSuccess: isUnlistSuccess,
@@ -149,6 +149,7 @@ export const ListedItems: React.FC<Props> = () => {
 
     return (
       <ProductItemCard
+        id={listedItem.id}
         isSkeleton={isSkeleton}
         customTools={(product) => (
           <div className="w-full flex items-center justify-between space-x-2">

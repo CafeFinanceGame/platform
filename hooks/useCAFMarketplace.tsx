@@ -32,6 +32,10 @@ export const useCAFMarketplace = (): ICAFMarketplaceActions => {
   return {
     buy: async (itemId: number): Promise<void> => {
       try {
+        if (!account.isConnected) {
+          throw new Error("Please connect your wallet");
+        }
+
         const tx = await writeContract(config, {
           abi: CAFMarketplaceAbi,
           address: contracts.CAF_MARKETPLACE_ADDRESS,
@@ -55,6 +59,10 @@ export const useCAFMarketplace = (): ICAFMarketplaceActions => {
 
     list: async (itemId: number, price: number): Promise<void> => {
       try {
+        if (!account.isConnected) {
+          throw new Error("Please connect your wallet");
+        }
+        
         await writeContract(config, {
           abi: CAFMarketplaceAbi,
           address: contracts.CAF_MARKETPLACE_ADDRESS,
@@ -70,6 +78,10 @@ export const useCAFMarketplace = (): ICAFMarketplaceActions => {
 
     unlist: async (itemId: number): Promise<void> => {
       try {
+        if (!account.isConnected) {
+          throw new Error("Please connect your wallet");
+        }
+
         await writeContract(config, {
           abi: CAFMarketplaceAbi,
           address: contracts.CAF_MARKETPLACE_ADDRESS,
@@ -85,6 +97,10 @@ export const useCAFMarketplace = (): ICAFMarketplaceActions => {
 
     updatePrice: async (itemId: number, price: number): Promise<void> => {
       try {
+        if (!account.isConnected) {
+          throw new Error("Please connect your wallet");
+        }
+
         await writeContract(config, {
           abi: CAFMarketplaceAbi,
           address: contracts.CAF_MARKETPLACE_ADDRESS,
@@ -100,6 +116,10 @@ export const useCAFMarketplace = (): ICAFMarketplaceActions => {
 
     resell: async (itemId: number): Promise<void> => {
       try {
+        if (!account.isConnected) {
+          throw new Error("Please connect your wallet");
+        }
+        
         await writeContract(config, {
           abi: CAFMarketplaceAbi,
           address: contracts.CAF_MARKETPLACE_ADDRESS,

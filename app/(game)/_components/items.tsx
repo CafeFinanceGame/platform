@@ -6,6 +6,7 @@ import { PiLightningFill } from "react-icons/pi";
 import { IoMdHeart } from "react-icons/io";
 import clsx from "clsx";
 import numeral from "numeral";
+import Link from "next/link";
 
 import { ListedItem, ProductItem as CAFProductItem } from "@/types";
 import { CAFButton } from "@/components/ui/button";
@@ -13,6 +14,7 @@ import constants from "@/utils/constants";
 import { Skeleton } from "@heroui/react";
 
 interface ProductItemProps extends React.HTMLAttributes<HTMLDivElement> {
+  id?: string | number;
   isSkeleton?: boolean;
   product: CAFProductItem;
   metadata?: any;
@@ -170,7 +172,8 @@ export const ProductItemCard: React.FC<ProductItemProps> = (props) => {
         "relative w-fit flex flex-col gap-2 items-center justify-center",
       )}
     >
-      <div
+      <Link
+        href={`/dashboard/product/${props.id}`}
         className={clsx(
           "relative rounded-[32px] border-2 border-default-200 z-10 overflow-hidden",
           "w-full min-w-60 aspect-[76/100]",
@@ -183,7 +186,7 @@ export const ProductItemCard: React.FC<ProductItemProps> = (props) => {
         <ProductImage />
         <Body />
         <Footer />
-      </div>
+      </Link>
       {props.customTools && props.customTools(product)}
     </div>
   );

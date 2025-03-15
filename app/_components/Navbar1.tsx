@@ -1,23 +1,25 @@
 "use client";
 
 import { Button } from "@heroui/button";
-import { Image, User } from "@heroui/react";
+import { Chip, Image, User } from "@heroui/react";
 import { useAppKit } from "@reown/appkit/react";
 import { useQuery } from "@tanstack/react-query";
 import { useAccount } from "wagmi";
 import numeral from "numeral";
 import { PiLightningFill } from "react-icons/pi";
+import { IoIosAddCircleOutline } from "react-icons/io";
 
 import { useCAFToken } from "@/hooks/useTokenomics";
 import { useCAFItemsManagerActions } from "@/hooks/useCAFItems";
 import { CompanyType } from "@/types";
+import { CAFButton } from "@/components/ui/button";
 
-interface Props extends React.HTMLAttributes<HTMLDivElement> {}
+interface Props extends React.HTMLAttributes<HTMLDivElement> { }
 export const Navbar1: React.FC<Props> = () => {
   const { open } = useAppKit();
   const { address } = useAccount();
   const { balanceOf } = useCAFToken();
-  const { getCompanyItem, getCompanyItemIdByOwner } =
+  const { getCompanyItem, getCompanyItemIdByOwner, useEnergy } =
     useCAFItemsManagerActions();
 
   const {
@@ -59,11 +61,10 @@ export const Navbar1: React.FC<Props> = () => {
     if (!address) return null;
 
     return (
-      <ul className="flex flex-row text-foreground">
-        <Button
+      <ul className="flex flex-row items-center text-foreground w-fit">
+        <Chip
           as={"li"}
           className="p-0 text-foreground h-fit"
-          isLoading={isBalanceLoading}
           startContent={
             <Image
               alt="CaFi Token"
@@ -74,16 +75,22 @@ export const Navbar1: React.FC<Props> = () => {
           variant="light"
         >
           {isSuccess ? numeral(balance).format("0.0a") : "0"}
-        </Button>
-        <Button
+        </Chip>
+        <Chip
           as={"li"}
-          className="p-0 text-foreground h-fit"
-          isLoading={isCompanyLoading}
-          startContent={<PiLightningFill className="text-primary" size={20} />}
           variant="light"
+          className="p-0 text-foreground h-fit hover:bg-transparent"
+          startContent={<PiLightningFill className="text-primary" size={20} />}
+          endContent={
+            <CAFButton
+              variant="light"
+              startContent={<IoIosAddCircleOutline size={20} className="text-foreground" />}
+              isIconOnly
+            />
+          }
         >
           {isCompanySuccess ? company?.energy : "0"}
-        </Button>
+        </Chip>
       </ul>
     );
   };

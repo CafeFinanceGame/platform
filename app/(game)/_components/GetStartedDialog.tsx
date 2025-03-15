@@ -14,19 +14,21 @@ import { useAccount } from "wagmi";
 import clsx from "clsx";
 import React from "react";
 import { useRouter } from "next/navigation";
+import Confetti from 'react-confetti'
 
 import { CreateCompanyForm } from "./CreateCompanyForm";
 
 import { useCAFItemsManagerActions } from "@/hooks/useCAFItems";
-import { CAFButton } from "@/components/ui/button";
+import { CAFButton, soundClick, soundClose } from "@/components/ui/button";
 
-interface Props extends React.HTMLAttributes<HTMLDivElement> {}
+interface Props extends React.HTMLAttributes<HTMLDivElement> { }
 export const GetStartedDialog: React.FC<Props> = () => {
   const { hasCompany } = useCAFItemsManagerActions();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [ownerHasCompany, setOwnerHasCompany] = React.useState(false);
   const { open } = useAppKit();
   const { isConnected, address } = useAccount();
+
   const router = useRouter();
 
   const checkCompanyOwnership = React.useCallback(async () => {
@@ -47,6 +49,7 @@ export const GetStartedDialog: React.FC<Props> = () => {
         className="w-fit"
         startContent={<IoPlayCircle size={24} />}
         onPress={() => {
+          soundClick.play();
           ownerHasCompany ? router.push("/dashboard/company") : onOpen();
         }}
       >
@@ -73,7 +76,10 @@ export const GetStartedDialog: React.FC<Props> = () => {
             <CreateCompanyForm hasCompany={ownerHasCompany} />
           </ModalBody>
           <ModalFooter className="flex flex-row gap-4 items-end justify-end">
-            <CAFButton onPress={onClose}>Cancel</CAFButton>
+            <CAFButton onPress={() => {
+              soundClose.play();
+              onClose();
+            }}>Cancel</CAFButton>
             <CAFButton
               className={clsx(
                 "text-default-900",
